@@ -6,16 +6,19 @@ SCM.views = SCM.views || {};
 SCM.views.network = (function(){
   const { esc } = SCM.u;
   const S = SCM.store, links = SCM.links;
-  const W = 680, C = 340, R = 215, PH = 32;
+  const W = 680, C = 340, R = 215, PH = 34;
 
-  const pillW = name => name.length * 15 + 26;
+  const pillW = name => name.length * 16 + 28;
 
   function layout(){
-    const n = S.AREAS.length || 1;
-    const areas = S.AREAS.map((a, i) => {
+    /* 業界のある領域だけを図に描く（空の領域は図の下に並べる。図が大きくなって文字が縮むのを防ぐ） */
+    const act = S.AREAS.filter(a => S.INDEX.some(e => e.area === a.id));
+    const empty = S.AREAS.filter(a => !act.includes(a));
+    const n = act.length || 1, R = Math.min(215, 90 + 16 * n);
+    const areas = act.map((a, i) => {
       const inds = S.INDEX.filter(e => e.area === a.id);
       const k = inds.length, maxW = Math.max(0, ...inds.map(e => pillW(e.name)));
-      const r = k === 0 ? 40 : Math.max(52, maxW / 2 + 14, k > 1 ? k * 19 + 26 : 0);
+      const r = Math.max(52, maxW / 2 + 14, k > 1 ? k * 19 + 26 : 0);
       const ang = -Math.PI / 2 + i * 2 * Math.PI / n;
       return { a, inds, r, x: C + R * Math.cos(ang), y: C + R * Math.sin(ang) };
     });
@@ -49,13 +52,13 @@ SCM.views.network = (function(){
     /* 業界を領域の中に置く */
     const nodes = {};
     for(const A of areas) A.inds.forEach((e, idx) => {
-      nodes[e.id] = { e, x: A.x, y: A.y + (idx - (A.inds.length - 1) / 2) * 38, w: pillW(e.name) };
+      nodes[e.id] = { e, x: A.x, y: A.y + (idx - (A.inds.length - 1) / 2) * 40, w: pillW(e.name) };
     });
     /* 描く範囲は中身に合わせて詰める（スマホでも文字が読める大きさになる） */
-    const half = A => Math.max(A.r, (A.a.name.length + (A.inds.length ? 0 : 5)) * 14 / 2);   /* 領域名の幅も範囲に入れる */
+    const half = A => Math.max(A.r, A.a.name.length * 15 / 2);   /* 領域名の幅も範囲に入れる */
     const x0 = Math.min(...areas.map(A => A.x - half(A))) - 8, x1 = Math.max(...areas.map(A => A.x + half(A))) + 8;
     const y0 = Math.min(...areas.map(A => A.y - A.r - 26)) - 8, y1 = Math.max(...areas.map(A => A.y + A.r)) + 8;
-    return { areas, nodes, vb: [x0, y0, x1 - x0, y1 - y0].map(v => v.toFixed(0)).join(" ") };
+    return { areas, nodes, empty, vbw: x1 - x0, vb: [x0, y0, x1 - x0, y1 - y0].map(v => v.toFixed(0)).join(" ") };
   }
 
   /* 業界の組ごとにまとめる（供給する側 → 受け取る側） */
@@ -68,15 +71,14 @@ SCM.views.network = (function(){
     return Object.values(g);
   }
 
-  function edgeGeom(a, b){
+  function edgeGeom(a, b, t = 0.5){
     let dx = b.x - a.x, dy = b.y - a.y;
     const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     const cut = n => Math.min((n.w / 2 + 3) / (Math.abs(dx) || 1e-6), (PH / 2 + 3) / (Math.abs(dy) || 1e-6));
     const x1 = a.x + dx * cut(a), y1 = a.y + dy * cut(a);
     const x2 = b.x - dx * (cut(b) + 4), y2 = b.y - dy * (cut(b) + 4);
     const off = 26, cx = (x1 + x2) / 2 - dy * off, cy = (y1 + y2) / 2 + dx * off;
-    /* 本数の丸は、受け取る側の領域名と重ならないよう、供給する側寄り（線の38%の位置）に置く */
-    const t = 0.38, u = 1 - t;
+    const u = 1 - t;
     return { x1, y1, x2, y2, cx, cy, mx: u * u * x1 + 2 * u * t * cx + t * t * x2, my: u * u * y1 + 2 * u * t * cy + t * t * y2 };
   }
 
@@ -85,21 +87,29 @@ SCM.views.network = (function(){
     document.getElementById("head").innerHTML = `
       <div class="crumbs"><a href="#home">業界一覧</a><span>›</span><span>つながり図</span></div>
       <h1>業界どうしのつながり</h1>
-      <p class="lede">大きな丸は領域、中の点は業界です。線は、モノやサービスが流れる向き（供給する側 → 受け取る側）で、数字は線の本数。点や線を押すと、中身を表示します。</p>`;
+      <p class="lede">大きな丸は領域、中の点は業界です（業界のある領域だけを描いています）。線は、モノやサービスが流れる向き（供給する側 → 受け取る側）で、数字は線の本数。点や線を押すと、中身を表示します。</p>`;
     document.getElementById("legend").innerHTML = "";
     document.getElementById("foot").textContent = "つながりの本数は、deps.js に書いた線の数です。業界構造の理解用で、投資判断の材料ではありません。";
 
-    const { areas, nodes, vb } = layout();
+    const { areas, nodes, empty, vbw, vb } = layout();
     const gs = groups();
     const view = document.getElementById("view");
 
-    const areaSvg = areas.map(A => `<circle class="n-area${A.inds.length ? "" : " empty"}" cx="${A.x.toFixed(1)}" cy="${A.y.toFixed(1)}" r="${A.r}"/>`).join("");
+    const areaSvg = areas.map(A => `<circle class="n-area" cx="${A.x.toFixed(1)}" cy="${A.y.toFixed(1)}" r="${A.r}"/>`).join("");
     /* 領域の名前は線より手前に描く（線と重なっても読める） */
-    const labelSvg = areas.map(A => `<text class="n-alabel${A.inds.length ? "" : " empty"}" x="${A.x.toFixed(1)}" y="${(A.y - A.r - 7).toFixed(1)}" text-anchor="middle">${esc(A.a.name)}${A.inds.length ? "" : "（準備中）"}</text>`).join("");
+    const labelSvg = areas.map(A => `<text class="n-alabel" x="${A.x.toFixed(1)}" y="${(A.y - A.r - 7).toFixed(1)}" text-anchor="middle">${esc(A.a.name)}</text>`).join("");
 
     /* 線と、本数の丸は別の層に描く（丸が領域名に隠れないように、丸は名前より手前） */
     const edgeData = (g, i) => `data-i="${i}" data-a="${g.from}" data-b="${g.to}" tabindex="0" role="button" aria-label="${esc(S.indName(g.from))}から${esc(S.indName(g.to))}へ ${g.deps.length}本"`;
-    const geoms = gs.map(g => nodes[g.from] && nodes[g.to] ? edgeGeom(nodes[g.from], nodes[g.to]) : null);
+    /* 本数の丸は、領域名と重ならない位置（線の真ん中から順に探す）に置く */
+    const boxes = areas.map(A => ({ x0: A.x - A.a.name.length * 7.5 - 6, x1: A.x + A.a.name.length * 7.5 + 6, y0: A.y - A.r - 24, y1: A.y - A.r + 2 }));
+    const hits = (x, y) => boxes.some(b => x + 15 > b.x0 && x - 15 < b.x1 && y + 15 > b.y0 && y - 15 < b.y1);
+    const geoms = gs.map(g => {
+      if(!(nodes[g.from] && nodes[g.to])) return null;
+      let p;
+      for(const t of [0.5, 0.4, 0.6, 0.32, 0.68]){ p = edgeGeom(nodes[g.from], nodes[g.to], t); if(!hits(p.mx, p.my)) break; }
+      return p;
+    });
     const edgeSvg = gs.map((g, i) => {
       const p = geoms[i]; if(!p) return "";
       const d = `M${p.x1.toFixed(1)} ${p.y1.toFixed(1)}Q${p.cx.toFixed(1)} ${p.cy.toFixed(1)} ${p.x2.toFixed(1)} ${p.y2.toFixed(1)}`;
@@ -107,7 +117,7 @@ SCM.views.network = (function(){
     }).join("");
     const badgeSvg = gs.map((g, i) => {
       const p = geoms[i]; if(!p) return "";
-      return `<g class="n-edge" ${edgeData(g, i)}><circle class="cnt" cx="${p.mx.toFixed(1)}" cy="${p.my.toFixed(1)}" r="11"/><text x="${p.mx.toFixed(1)}" y="${(p.my + 4.5).toFixed(1)}" text-anchor="middle">${g.deps.length}</text></g>`;
+      return `<g class="n-edge" ${edgeData(g, i)}><circle class="cnt" cx="${p.mx.toFixed(1)}" cy="${p.my.toFixed(1)}" r="14"/><text x="${p.mx.toFixed(1)}" y="${(p.my + 5.5).toFixed(1)}" text-anchor="middle">${g.deps.length}</text></g>`;
     }).join("");
 
     const nodeSvg = Object.values(nodes).map(n => `<g class="n-node" data-id="${n.e.id}" tabindex="0" role="button">
@@ -115,9 +125,10 @@ SCM.views.network = (function(){
       <text x="${n.x.toFixed(1)}" y="${(n.y + 5).toFixed(1)}" text-anchor="middle">${esc(n.e.name)}</text></g>`).join("");
 
     view.innerHTML = `<section>
-      <div class="net-scroll"><svg class="net" viewBox="${vb}" role="img" aria-label="領域のかたまりと、業界どうしのつながり">
-        <defs><marker id="nh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="g-head" d="M1 1L9 5L1 9z"/></marker></defs>
+      <div class="net-scroll"><svg class="net" viewBox="${vb}" style="max-width:${Math.round(vbw * 1.3)}px;min-width:${Math.round(vbw * 0.8)}px" role="img" aria-label="領域のかたまりと、業界どうしのつながり">
+        <defs><marker id="nh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="g-head" d="M1 1L9 5L1 9z"/></marker></defs>
         ${areaSvg}${edgeSvg}${labelSvg}${badgeSvg}${nodeSvg}</svg></div>
+      ${empty.length ? `<div class="planned"><span class="k">まだ業界のない領域</span>${empty.map(a => `<span class="pill" aria-disabled="true">${esc(a.name)}</span>`).join("")}</div>` : ""}
       <div id="netInfo"></div>
     </section>`;
 
