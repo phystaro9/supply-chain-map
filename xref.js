@@ -328,6 +328,24 @@ window.SCM_XREF = {
     ]
    }
   ],
+  "tepco-ep": [
+   {
+    "ind": "power",
+    "home": "retail",
+    "stages": [
+     "retail"
+    ]
+   }
+  ],
+  "chuden-miraiz": [
+   {
+    "ind": "power",
+    "home": "retail",
+    "stages": [
+     "retail"
+    ]
+   }
+  ],
   "imabari": [
    {
     "ind": "shipping",
@@ -722,7 +740,7 @@ window.SCM_XREF = {
  "counts": {
   "power": {
    "stages": 7,
-   "companies": 23
+   "companies": 25
   },
   "shipping": {
    "stages": 5,

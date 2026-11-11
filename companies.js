@@ -178,6 +178,20 @@ window.SCM_COMPANIES = {
     "url": "https://www.renovainc.com/",
     "cap": 658
   },
+  "tepco-ep": {
+    "name": "東京電力エナジーパートナー",
+    "short": "東電EP",
+    "listed": false,
+    "url": "https://www.tepco.co.jp/ep/",
+    "note": "東京電力HDの100%子会社（小売）。"
+  },
+  "chuden-miraiz": {
+    "name": "中部電力ミライズ",
+    "short": "中電ミライズ",
+    "listed": false,
+    "url": "https://miraiz.chuden.co.jp/",
+    "note": "中部電力の100%子会社（小売）。2020年4月発足。"
+  },
   "tepcopg": {
     "name": "東京電力パワーグリッド",
     "short": "東電PG",

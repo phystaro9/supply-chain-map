@@ -285,6 +285,22 @@
         "construction": "東京電力系の電気工事大手。東電向けが約3割",
         "generation": "太陽光・水力の発電事業"
       }
+    },
+    {
+      "id": "tepco-ep",
+      "type": "u",
+      "home": "retail",
+      "stages": {
+        "retail": "東京電力HDの小売子会社。国内最大の電力小売"
+      }
+    },
+    {
+      "id": "chuden-miraiz",
+      "type": "u",
+      "home": "retail",
+      "stages": {
+        "retail": "中部電力の小売子会社。2020年4月の分社で発足"
+      }
     }
   ]
 });
