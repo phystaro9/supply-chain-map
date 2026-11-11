@@ -276,6 +276,7 @@ window.SCM_COMPANIES = {
     ]
   },
   "tsuneishi": {
+    "page": true,
     "name": "常石造船",
     "short": "常石造船",
     "listed": false,
