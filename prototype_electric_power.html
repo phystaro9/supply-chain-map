@@ -137,6 +137,14 @@ a.co:hover b{text-decoration:underline}
 .graph .g-node.unl{stroke-dasharray:5 3}
 .graph .g-node.focus{fill:var(--util-bg);stroke:var(--volt);stroke-width:2}
 .graph .g-link:hover .g-node{stroke:var(--muted)}
+.cap-list th{font-size:.72rem;font-weight:400;color:var(--muted);text-align:right;padding:0 0 4px 8px}
+.cap-list .na{color:var(--muted);font-family:var(--body)}
+.cap-list .na small{display:block}
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:10px}
+.totals div{border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.totals .k{display:block;font-size:.74rem;color:var(--muted)}
+.totals .v{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.basis{font-size:.78rem;font-weight:500;color:var(--ink);border:1.5px solid var(--ink);border-radius:4px;padding:0 7px}
 .stack{display:flex;height:34px;border-radius:6px;overflow:hidden;margin:10px 0 6px}
 .stack div{display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--bg);font-family:var(--mono);min-width:0;overflow:hidden;white-space:nowrap}
 .cap-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:12px}
@@ -330,14 +338,28 @@ function graphSVG(g){
 }
 function capitalBlock(cap){
   const colors = { debt:"var(--debt)", hybrid:"var(--hyb)", equity:"var(--eq)" };
-  const sums = cap.groups.map(g=>({...g, sum: g.items.reduce((a,b)=>a+b.v,0)}));
+  const fvVal = it => typeof it.fv === "number" ? it.fv : (it.fv === "approx" ? it.v : null);
+  const sums = cap.groups.map(g=>{
+    const fvs = g.items.map(fvVal);
+    return {...g, sum: g.items.reduce((a,b)=>a+b.v,0), fvSum: fvs.every(x=>x!=null) ? fvs.reduce((a,b)=>a+b,0) : null};
+  });
   const total = sums.reduce((a,g)=>a+g.sum,0);
+  const fvTotal = sums.every(g=>g.fvSum!=null) ? sums.reduce((a,g)=>a+g.fvSum,0) : null;
   const stack = sums.map(g=>{ const p = g.sum/total*100; return `<div style="width:${p}%;background:${colors[g.id]}" title="${esc(g.name)} ${fmtOku(g.sum)}">${p>=8?Math.round(p)+"%":""}</div>`; }).join("");
-  const lists = sums.map(g=>`<div><h4><i style="background:${colors[g.id]}"></i>${esc(g.name)}<span class="metric" style="margin-left:auto">${fmtOku(g.sum)}・${(g.sum/total*100).toFixed(1)}%</span></h4>
-    <table>${g.items.map(it=>`<tr><td>${esc(it.name)}${it.note?`<small>${esc(it.note)}</small>`:""}</td><td class="n">${fmtOku(it.v)}</td></tr>`).join("")}</table></div>`).join("");
-  return `<div class="card"><div class="sec-head" style="margin:0"><h3>資本構成</h3><p>${esc(cap.asOf)}・調達額の合計 ${fmtOku(total)}</p></div>
-    <div class="stack" role="img" aria-label="負債・ハイブリッド・株式の比率">${stack}</div>
-    <div class="cap-list">${lists}</div></div>`;
+  const fvCell = it => typeof it.fv === "number" ? fmtOku(it.fv)
+    : it.fv === "approx" ? `<span class="na">≈簿価</span>`
+    : `<span class="na">—${it.fvNote?`<small>${esc(it.fvNote)}</small>`:""}</span>`;
+  const lists = sums.map(g=>`<div><h4><i style="background:${colors[g.id]}"></i>${esc(g.name)}<span class="metric" style="margin-left:auto">${(g.sum/total*100).toFixed(1)}%</span></h4>
+    <table><thead><tr><th></th><th>簿価</th><th>時価</th></tr></thead><tbody>
+    ${g.items.map(it=>`<tr><td>${esc(it.name)}${it.note?`<small>${esc(it.note)}</small>`:""}</td><td class="n">${fmtOku(it.v)}</td><td class="n">${fvCell(it)}</td></tr>`).join("")}
+    <tr class="sum"><td>小計</td><td class="n">${fmtOku(g.sum)}</td><td class="n">${g.fvSum!=null?fmtOku(g.fvSum):'<span class="na">—</span>'}</td></tr>
+    </tbody></table></div>`).join("");
+  return `<div class="card"><div class="sec-head" style="margin:0"><h3>資本構成</h3><p>${esc(cap.asOf)}</p></div>
+    <div class="totals"><div><span class="k">簿価の合計</span><span class="v">${fmtOku(total)}</span></div><div><span class="k">時価の合計</span><span class="v">${fvTotal!=null?fmtOku(fvTotal):'<span class="na">算出不可</span>'}</span></div></div>
+    <p class="sub-h" style="margin:12px 0 0">構成比（簿価）</p>
+    <div class="stack" role="img" aria-label="負債・ハイブリッド・株式の簿価の比率">${stack}</div>
+    <div class="cap-list">${lists}</div>
+    ${cap.basisNote ? `<p class="note" style="margin:10px 0 0">${esc(cap.basisNote)}</p>` : ""}</div>`;
 }
 function company(c){
   const P = D.pages[c.id];
