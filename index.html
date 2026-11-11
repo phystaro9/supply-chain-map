@@ -214,6 +214,14 @@ section.area+section.area{margin-top:22px}
 .planned .k{font-size:.74rem;color:var(--muted);margin-right:2px}
 a.row-name{font-weight:500;font-size:1rem;text-decoration:none}
 a.row-name:hover{text-decoration:underline}
+.deps{display:grid;gap:8px;margin-top:6px}
+.dep{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.dep .flow{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:.88rem}
+.dep .flow a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--line)}
+.dep .flow a:hover{border-bottom-color:var(--muted)}
+.dep .flow i{font-style:normal;color:var(--volt)}
+.dep p{margin:4px 0 0;font-size:.82rem;color:var(--muted)}
+.dep-h{font-size:.76rem;color:var(--muted);margin:12px 0 0}
 .ind-roles{display:flex;flex-direction:column;gap:14px}
 .ind-role-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px}
 .ind-role-head a{font-family:var(--display);font-weight:700;text-decoration:none}
@@ -238,6 +246,7 @@ a.row-name:hover{text-decoration:underline}
 <script src="industries.js"></script>
 <script src="companies.js"></script>
 <script src="xref.js"></script>
+<script src="deps.js"></script>
 <!-- 動き -->
 <script src="js/util.js"></script>
 <script src="js/store.js"></script>

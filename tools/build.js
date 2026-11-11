@@ -113,6 +113,25 @@ for(const ind of INDS){
 }
 for(const id of Object.keys(CM)) if(!xrefCompanies[id]) warn(`companies.js: ${id} はどの業界にも出てきません`);
 
+/* ---------- 業界どうしのつながり ---------- */
+if(run("deps.js")){
+  const seenDep = new Set();
+  (W.SCM_DEPS || []).forEach((d, i) => {
+    const at = `deps.js の ${i + 1} 件目`;
+    for(const side of ["from", "to"]){
+      const e = d[side];
+      if(!e || !e.ind || !e.stage){ err(`${at}: ${side} に ind と stage がありません`); continue; }
+      if(!xrefStages[e.ind]) err(`${at}: ${side} の業界 "${e.ind}" がありません`);
+      else if(!xrefStages[e.ind][e.stage]) err(`${at}: ${side} の段 "${e.stage}" は業界 "${e.ind}" にありません`);
+    }
+    if(d.from && d.to && d.from.ind === d.to.ind) err(`${at}: 同じ業界の中の線です。業界の中の流れは段の並びで表すので、ここには書きません`);
+    if(!String(d.what || "").trim()) err(`${at}: what（何が流れるか）が空です`);
+    const key = d.from && d.to ? `${d.from.ind}/${d.from.stage}>${d.to.ind}/${d.to.stage}` : "";
+    if(key && seenDep.has(key)) warn(`${at}: ${key} が重複しています`);
+    seenDep.add(key);
+  });
+}
+
 /* ---------- 企業ページ ---------- */
 const pageDir = path.join(ROOT, "pages");
 const pageFiles = fs.existsSync(pageDir) ? fs.readdirSync(pageDir).filter(f => f.endsWith(".js")) : [];

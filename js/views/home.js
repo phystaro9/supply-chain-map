@@ -36,7 +36,10 @@ SCM.views.home = (function(){
         ${inds.length ? `<div class="ind-grid">${inds.map(card).join("")}</div>` : ""}
         ${planned.length ? `<div class="planned"><span class="k">${inds.length ? "このあと" : "予定"}</span>${planned.map(p => `<span class="pill" aria-disabled="true">${esc(p)}</span>`).join("")}</div>` : ""}
       </section>`;
-    }).join("");
+    }).join("") + (S.DEPS.length ? `<section class="area">
+        <div class="sec-head"><h3>業界どうしのつながり</h3><p>${S.DEPS.length}本・矢印は供給する側から受け取る側へ</p></div>
+        <div class="deps">${S.DEPS.map(SCM.links.dep).join("")}</div>
+      </section>` : "");
 
     document.getElementById("legend").innerHTML = "";
     document.getElementById("foot").textContent = `収録：${S.INDEX.length}業界・${total}社（${S.AREAS.length}領域）。業界構造の理解用で、投資判断の材料ではありません。`;

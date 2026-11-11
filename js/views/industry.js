@@ -57,6 +57,17 @@ SCM.views.industry = (function(){
       : `${m.note || ""}${m.updated ? " データ更新：" + m.updated : ""}`;
   }
 
+  /* ほかの業界とのつながり（業界全体、または1つの段について） */
+  function depsBlock(ind, stage){
+    const d = SCM.store.depsFor(ind, stage);
+    if(!d.inn.length && !d.out.length) return "";
+    const list = (title, arr) => arr.length ? `<p class="dep-h">${title}</p><div class="deps">${arr.map(links.dep).join("")}</div>` : "";
+    return `<section>
+      <div class="sec-head"><h3>ほかの業界とのつながり</h3><p>矢印は、供給する側から受け取る側へ</p></div>
+      ${list(stage ? "この段に入ってくるもの" : "この業界に入ってくるもの", d.inn)}${list(stage ? "この段から出ていくもの" : "この業界から出ていくもの", d.out)}
+    </section>`;
+  }
+
   /* 段をまたぐ会社の帯：会社ごとの縦の列 */
   function band(x, cols){
     const { ST, stageIdx } = x;
@@ -100,6 +111,7 @@ SCM.views.industry = (function(){
     <section>
       <div class="spine">${stations}<div class="station demand"><div class="st-head"><span class="st-name">${esc(ep.name)}</span><span class="st-sub">${esc(ep.sub || "")}</span></div></div></div>
     </section>
+    ${depsBlock(I.id, null)}
     ${cols.length ? `<section>
       <div class="sec-head"><h3>段をまたぐ会社</h3><p>会社ごとの縦の列。色の付いた段を自社か子会社で手がけています。</p></div>
       <p class="scroll-hint" id="bandHint" hidden>横にスクロールすると全社を見られます →</p>
@@ -142,7 +154,8 @@ SCM.views.industry = (function(){
       <div class="rows">${home.map(c => row(c, false)).join("")}</div>
       ${I.stageNotes && I.stageNotes[st.id] ? `<p class="note" style="margin-top:12px">${esc(I.stageNotes[st.id])}</p>` : ""}
       ${cross.length ? `<p class="sub-h">ほかの段から関わる会社</p><div class="rows">${cross.map(c => row(c, true)).join("")}</div>` : ""}
-    </section>`;
+    </section>
+    ${depsBlock(I.id, st.id)}`;
   }
 
   return { head, overview, sector };

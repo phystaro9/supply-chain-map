@@ -33,7 +33,14 @@ SCM.store = (function(){
   const stageName = (ind, st) => (X.stages[ind] || {})[st] || st;
   const indName = id => (indMeta(id) || {}).name || id;
 
-  return { INDEX, AREAS, CM, X, areaMeta, areaOfInd, indMeta, loadInd, loadPage, appearances, stageName, indName };
+  /* 業界どうしのつながり（存在しない業界を指すものは除く）。ind だけ → その業界に関わるもの、stage まで → その段に関わるもの */
+  const DEPS = (window.SCM_DEPS || []).filter(d => indMeta(d.from.ind) && indMeta(d.to.ind));
+  const depsFor = (ind, stage) => ({
+    out: DEPS.filter(d => d.from.ind === ind && (!stage || d.from.stage === stage)),
+    inn: DEPS.filter(d => d.to.ind === ind && (!stage || d.to.stage === stage))
+  });
+
+  return { INDEX, AREAS, CM, X, DEPS, depsFor, areaMeta, areaOfInd, indMeta, loadInd, loadPage, appearances, stageName, indName };
 })();
 
 /* リンクの組み立て（どの画面からも使う） */
@@ -61,5 +68,10 @@ SCM.links = (function(){
     const op = opts.noOthers ? "" : others(c, curInd);
     return (parts.length || op) ? `<div class="links">${parts.join("")}${op}</div>` : "";
   }
-  return { company, stage, industry, others, row };
+  /* 業界どうしのつながり1本。どちらの業界・段も xref から名前を引くので、業界データは読まない */
+  function dep(d){
+    const end = e => `<a href="${stage(e.ind, e.stage)}">${esc(S.indName(e.ind))}・${esc(S.stageName(e.ind, e.stage))}</a>`;
+    return `<div class="dep"><div class="flow">${end(d.from)}<i>→</i>${end(d.to)}</div><p>${esc(d.what)}</p></div>`;
+  }
+  return { company, stage, industry, others, row, dep };
 })();
