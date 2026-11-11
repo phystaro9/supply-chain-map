@@ -1,0 +1,529 @@
+<title>サプライチェーン地図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an industry switch, then a vertical "line" spine of stage stations, plus a band chart where each multi-stage company gets its own column */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dbe1;
+  --util:#0f6e5c; --util-bg:#e2f3ee; --sup:#4b43a6; --sup-bg:#ecebfb; --volt:#c98a00;
+  --debt:#4b43a6; --hyb:#c98a00; --eq:#0f6e5c; --warn:#9a5b00; --warn-bg:#fbf0dc;
+  --display:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f151b; --panel:#17212a; --ink:#e4eaef; --muted:#97a4ae; --line:#2b3843;
+  --util:#5ccfb4; --util-bg:#123029; --sup:#a9a3f2; --sup-bg:#221f45; --volt:#f0b93a;
+  --debt:#8f88ea; --hyb:#e0a630; --eq:#4cbfa4; --warn:#f0b93a; --warn-bg:#33270f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --panel:#17212a; --ink:#e4eaef; --muted:#97a4ae; --line:#2b3843;
+  --util:#5ccfb4; --util-bg:#123029; --sup:#a9a3f2; --sup-bg:#221f45; --volt:#f0b93a;
+  --debt:#8f88ea; --hyb:#e0a630; --eq:#4cbfa4; --warn:#f0b93a; --warn-bg:#33270f; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:880px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:var(--display);font-weight:700;font-size:1.6rem;margin:0;text-wrap:balance;letter-spacing:.02em}
+h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:0 0 4px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:1.08rem;margin:0 0 4px}
+.lede{color:var(--muted);margin:4px 0 14px;font-size:.9rem;max-width:62ch}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+
+/* industry switch + nav */
+.inds{display:flex;gap:4px;flex-wrap:wrap;margin:12px 0 4px}
+.inds a{text-decoration:none;font-family:var(--display);font-weight:700;font-size:.95rem;padding:6px 14px;border-radius:8px;color:var(--muted);border:1px solid transparent}
+.inds a[aria-current="page"]{color:var(--ink);background:var(--panel);border-color:var(--line)}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;scrollbar-width:thin}
+nav a{flex:none;text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.85rem;background:var(--panel)}
+nav a[aria-current="page"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+section+section{margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sec-head p{margin:0;color:var(--muted);font-size:.82rem}
+
+/* spine */
+.spine{position:relative;display:flex;flex-direction:column;gap:14px;padding-left:22px}
+.spine::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:repeating-linear-gradient(var(--volt) 0 8px,transparent 8px 13px)}
+.station{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.station::before{content:"";position:absolute;left:-21px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--volt)}
+.st-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.st-name{font-family:var(--display);font-weight:700;font-size:1.05rem;text-decoration:none}
+.st-sub{color:var(--muted);font-size:.8rem}
+.st-more{margin-left:auto;color:var(--muted);font-size:.8rem;text-decoration:none}
+.st-more:hover,.st-name:hover{text-decoration:underline}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.co{display:block;text-decoration:none;border-radius:8px;padding:7px 10px;border:1px solid transparent;min-width:0}
+.co.u{background:var(--util-bg);color:var(--util)}
+.co.s{background:var(--sup-bg);color:var(--sup)}
+.co.unl{background:transparent;border:1.5px dashed currentColor}
+.co b{display:block;font-weight:500;font-size:.92rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co .lst{font-size:.74rem}
+a.co:hover b{text-decoration:underline}
+.cross{margin:8px 0 0;font-size:.8rem;color:var(--muted)}
+.cross a{color:var(--ink)}
+.demand .st-head{margin:0}
+
+/* metrics */
+.metric{font-family:var(--mono);font-size:.78rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.metric .k{font-family:var(--body);margin-right:4px}
+.flag{display:inline-block;font-family:var(--body);font-size:.68rem;color:var(--warn);background:var(--warn-bg);border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:1px}
+
+/* band chart */
+.band-scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 12px 10px}
+.band{display:grid;column-gap:6px;row-gap:0;min-width:max-content}
+.band .rl{position:sticky;left:0;z-index:1;background:var(--panel);font-size:.78rem;color:var(--muted);padding-right:8px;display:flex;align-items:center;height:40px;border-top:1px solid var(--line)}
+.band .rl a{color:var(--ink);text-decoration:none;line-height:1.25}
+.band .ch{font-size:.72rem;text-align:center;line-height:1.25;padding-bottom:6px;display:flex;align-items:flex-end;justify-content:center;min-height:34px}
+.band .ch a{text-decoration:none;color:var(--ink)}
+.band .ch a:hover{text-decoration:underline}
+.band .cell{height:40px;position:relative;background:linear-gradient(var(--line),var(--line)) top/100% 1px no-repeat}
+.band .cell.on::after{content:"";position:absolute;left:6px;right:6px;top:0;bottom:0}
+.band .cell.on.u::after{background:var(--util)}
+.band .cell.on.s::after{background:var(--sup)}
+.band .cell.on.unl::after{background:transparent;border-left:2px dashed var(--util);border-right:2px dashed var(--util)}
+.band .cell.on.unl.s::after{border-color:var(--sup)}
+.band .cell.on:not(.top)::after{top:-1px}
+.band .cell.on.top::after{top:5px;border-top-left-radius:6px;border-top-right-radius:6px}
+.band .cell.on.bot::after{bottom:5px;border-bottom-left-radius:6px;border-bottom-right-radius:6px}
+.band .cell.on.unl.top::after{border-top:2px dashed var(--util)}
+.band .cell.on.unl.bot::after{border-bottom:2px dashed var(--util)}
+.band .cell.on.unl.s.top::after,.band .cell.on.unl.s.bot::after{border-color:var(--sup)}
+.band .cell.gap::after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px dotted var(--muted);transform:translateX(-1px)}
+.band-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:.76rem;color:var(--muted)}
+.band-legend span{display:inline-flex;align-items:center;gap:6px}
+.scroll-hint{font-size:.74rem;color:var(--muted);margin:0 0 6px}
+
+/* support box */
+.support{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.support div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.support b{display:block;font-weight:500;font-size:.92rem}
+.support p{margin:2px 0 4px;font-size:.82rem;color:var(--muted)}
+.support a{font-size:.78rem}
+
+/* mini band in rows */
+.mini{display:inline-flex;gap:2px;vertical-align:middle}
+.mini i{width:14px;height:6px;border-radius:2px;background:var(--line)}
+.mini i.on{background:var(--volt)}
+
+/* sector detail */
+.flowbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.flowbar a{color:var(--muted)}
+.flowbar strong{color:var(--ink);font-weight:500}
+.role{max-width:62ch;margin:0 0 18px}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:6px;min-width:0}
+.row.unl{border-style:dashed;border-width:1.5px}
+.row-top{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.row-top b{font-weight:500;font-size:1rem}
+.tag{font-size:.72rem;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.tag.u{background:var(--util-bg);color:var(--util)}
+.tag.s{background:var(--sup-bg);color:var(--sup)}
+.tag.x{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.row-top .metric{margin-left:auto;font-size:.9rem}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px}
+.bar i.rev{background-image:repeating-linear-gradient(135deg,transparent 0 3px,var(--panel) 3px 5px)}
+.note{color:var(--muted);font-size:.85rem;min-width:0}
+.links{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:.8rem}
+.links a{color:var(--ink)}
+.pill{font-size:.74rem;border:1px dashed var(--line);color:var(--muted);border-radius:999px;padding:1px 9px;cursor:not-allowed}
+a.pill-on{font-size:.74rem;border:1px solid var(--volt);border-radius:999px;padding:1px 9px;text-decoration:none}
+.sub-h{font-size:.8rem;color:var(--muted);margin:18px 0 8px;letter-spacing:.04em}
+
+/* company page */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:14px 0}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.fact .k{display:block;font-size:.74rem;color:var(--muted)}
+.fact .v{font-family:var(--mono);font-size:.92rem;font-variant-numeric:tabular-nums}
+.fact .d{display:block;font-size:.74rem;color:var(--muted);margin-top:2px}
+.stage-links{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}
+.stage-links a{display:block;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--volt);border-radius:0;padding:8px 12px;min-width:0;flex:1 1 220px}
+.stage-links a b{display:block;font-weight:500}
+.stage-links a span{font-size:.8rem;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 20px}
+.two>div{min-width:0}
+ul.plain{margin:0;padding-left:1.1em;font-size:.88rem;display:grid;gap:5px}
+.callout{margin:14px 0 0;padding:10px 12px;border-left:4px solid var(--volt);border-radius:0;background:var(--bg);font-size:.88rem}
+.src{margin:10px 0 0;font-size:.74rem;color:var(--muted)}
+.src a{color:var(--muted)}
+.graph-scroll{overflow-x:auto}
+.graph-scroll svg{display:block;width:100%;min-width:560px;height:auto}
+.graph{font-family:var(--body)}
+.graph .g-edge{stroke:var(--muted);stroke-width:1.5}
+.graph .g-head{fill:var(--muted)}
+.graph .g-lbl rect{fill:var(--panel);stroke:var(--line)}
+.graph .g-pct{fill:var(--ink);font:500 13px var(--mono)}
+.graph .g-sub{fill:var(--muted);font-size:11px}
+.graph .g-warn{fill:var(--warn);font-size:11px}
+.graph .g-name{fill:var(--ink);font-size:14px;font-weight:500}
+.graph .g-node{fill:var(--panel);stroke:var(--line);stroke-width:1}
+.graph .g-node.unl{stroke-dasharray:5 3}
+.graph .g-node.focus{fill:var(--util-bg);stroke:var(--volt);stroke-width:2}
+.graph .g-link:hover .g-node{stroke:var(--muted)}
+.stack{display:flex;height:34px;border-radius:6px;overflow:hidden;margin:10px 0 6px}
+.stack div{display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--bg);font-family:var(--mono);min-width:0;overflow:hidden;white-space:nowrap}
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:10px}
+.totals div{border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.totals .k{display:block;font-size:.74rem;color:var(--muted)}
+.totals .v{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cap-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:12px}
+.cap-list h4{margin:0 0 6px;font-size:.88rem;font-weight:500;display:flex;align-items:center;gap:6px}
+.cap-list h4 i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.cap-list table{width:100%;border-collapse:collapse;font-size:.82rem}
+.cap-list th{font-size:.72rem;font-weight:400;color:var(--muted);text-align:right;padding:0 0 4px 8px}
+.cap-list td{padding:4px 0;border-top:1px solid var(--line);vertical-align:top}
+.cap-list td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:8px}
+.cap-list td small{display:block;color:var(--muted);font-size:.72rem}
+.cap-list .na{color:var(--muted);font-family:var(--body)}
+.cap-list .na small{display:block}
+.cap-list tr.sum td{font-weight:500}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--muted);margin:18px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.foot{margin-top:24px;font-size:.78rem;color:var(--muted);max-width:72ch}
+@media (prefers-reduced-motion:no-preference){main>*{animation:fade .25s ease-out}@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="wrap">
+  <h1 id="h1">サプライチェーン地図</h1>
+  <div class="inds" id="inds" aria-label="業界"></div>
+  <p class="lede" id="lede"></p>
+  <nav id="nav" aria-label="ページ"></nav>
+  <main id="view"><p class="note">データを読み込んでいます…</p></main>
+  <div class="legend" id="legend"></div>
+  <p class="foot" id="foot"></p>
+</div>
+
+<!-- 業界の一覧と会社の共通情報。業界のデータ（data/）と企業ページ（pages/）は必要になったときに読み込む -->
+<script src="industries.js"></script>
+<script src="companies.js"></script>
+<script>
+(function(){
+const INDEX = window.SCM_INDEX || [];
+const CM = window.SCM_COMPANIES || {};
+window.SCM_IND = window.SCM_IND || [];
+window.SCM_PAGES = window.SCM_PAGES || {};
+const view = document.getElementById("view"), nav = document.getElementById("nav");
+if(!INDEX.length){ view.innerHTML = '<p class="note">industries.js を読み込めませんでした。このページと同じ場所にあるか確認してください。</p>'; return; }
+
+/* ---------- 読み込み ---------- */
+const loading = {};
+function loadScript(src){
+  if(!loading[src]) loading[src] = new Promise((ok, ng) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = () => ok(); s.onerror = () => ng(new Error(src));
+    document.head.appendChild(s);
+  });
+  return loading[src];
+}
+const loadedInd = id => window.SCM_IND.find(x => x.id === id);
+async function loadInd(id){
+  if(loadedInd(id)) return loadedInd(id);
+  const e = INDEX.find(x => x.id === id);
+  await loadScript(e.file);
+  return loadedInd(id);
+}
+async function loadPage(id){
+  if(window.SCM_PAGES[id]) return window.SCM_PAGES[id];
+  try { await loadScript(`pages/${id}.js`); } catch(e){}
+  return window.SCM_PAGES[id];
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+function fmt(v){
+  if(v >= 10000){ const t = v/10000; return (t>=10 ? t.toFixed(1) : t.toFixed(2)).replace(/\.?0+$/,"") + "兆円"; }
+  return Math.round(v).toLocaleString("ja-JP") + "億円";
+}
+const fmtOku = v => Math.round(v).toLocaleString("ja-JP") + "億円";
+
+/* ---------- 現在の業界 ---------- */
+let I, ST, CO, stageIdx, stageById, coById;
+const merge = e => ({ ...(CM[e.id] || { name: e.id }), ...e });
+function use(ind){
+  I = ind; ST = ind.stages; CO = ind.companies.map(merge);
+  stageIdx = Object.fromEntries(ST.map((s,i)=>[s.id,i]));
+  stageById = Object.fromEntries(ST.map(s=>[s.id,s]));
+  coById = Object.fromEntries(CO.map(c=>[c.id,c]));
+}
+const L = v => v === "overview" ? `#${I.id}` : `#${I.id}-${v}`;
+const hasNum = c => !!I.showNumbers && (c.cap != null || c.rev != null);
+const size = c => !I.showNumbers ? 0 : (c.cap != null ? c.cap : (c.rev || 0));
+const isUnl = c => c.listed === false;
+const bySize = (a,b) => size(b) - size(a);
+const stagesOf = c => Object.keys(c.stages || {}).filter(id=>id in stageIdx).sort((a,b)=>stageIdx[a]-stageIdx[b]);
+const multi = c => stagesOf(c).length >= 2;
+const typeLabel = c => isUnl(c) ? "未上場" : ((I.labels && I.labels[c.type]) ? I.labels[c.type].replace(/（.*?）/,"") : (c.type==="u"?"中核企業":"関連企業"));
+function metric(c){
+  if(!hasNum(c)) return "";
+  if(c.cap != null) return `<span class="metric"><span class="k">時価総額</span>${fmt(c.cap)}${c.capDate?`<span class="flag">${esc(c.capDate)}時点</span>`:""}</span>`;
+  return `<span class="metric"><span class="k">売上高</span>${fmt(c.rev)}</span>`;
+}
+const coHref = c => c.page ? L("co-"+c.id) : L(c.home);
+function mini(c){
+  const s = c.stages||{};
+  return `<span class="mini" aria-label="関わる段：${esc(stagesOf(c).map(id=>stageById[id].name).join("、"))}">${ST.map(st=>`<i class="${s[st.id]?"on":""}" title="${esc(st.name)}"></i>`).join("")}</span>`;
+}
+/* 同じ会社が出てくる他の業界（読み込み済みのもの） */
+function otherInds(id){
+  return window.SCM_IND
+    .filter(x => x.id !== I.id && x.companies.some(e => e.id === id))
+    .sort((a,b)=> INDEX.findIndex(e=>e.id===a.id) - INDEX.findIndex(e=>e.id===b.id))
+    .map(x => { const e = x.companies.find(e => e.id === id); const st = x.stages.find(s => s.id === e.home); return { ind: x, entry: e, stage: st }; });
+}
+function otherPills(c){
+  const auto = otherInds(c.id).map(o => `<a class="pill-on" href="#${o.ind.id}-${o.entry.home}">${esc(o.ind.name)}（${esc(o.stage ? o.stage.name : "")}）→</a>`);
+  const manual = (c.otherSectors||[]).map(o => o.href
+    ? `<a class="pill-on" href="${esc(o.href)}">${esc(o.name)} →</a>`
+    : `<span class="pill" title="業種ページは準備中です" aria-disabled="true">${esc(o.name)}（準備中）</span>`);
+  return auto.concat(manual).join("");
+}
+function linksRow(c, opts={}){
+  const parts = [];
+  if(c.page && !opts.onPage) parts.push(`<a href="${L("co-"+c.id)}">企業ページ →</a>`);
+  if(c.url) parts.push(`<a href="${esc(c.url)}" target="_blank" rel="noopener">公式サイト ↗</a>`);
+  const op = otherPills(c);
+  return (parts.length||op) ? `<div class="links">${parts.join("")}${op}</div>` : "";
+}
+
+function chrome(cur){
+  document.getElementById("inds").innerHTML = INDEX.map(x=>`<a href="#${x.id}"${x.id===I.id?' aria-current="page"':""}>${esc(x.name)}</a>`).join("");
+  document.getElementById("h1").textContent = (I.title || I.name) + "地図";
+  document.title = (I.title || I.name) + "地図";
+  document.getElementById("lede").textContent = (I.lede || "") + "段や会社を選ぶと詳細を表示します。";
+  const pageCos = CO.filter(c=>c.page);
+  if(cur.startsWith("co-") && !pageCos.some(c=>"co-"+c.id===cur) && CM[cur.slice(3)]) pageCos.push({ id: cur.slice(3), ...CM[cur.slice(3)] });
+  const items = [["overview","全体"], ...ST.map(s=>[s.id,s.name]), ...pageCos.map(c=>["co-"+c.id, c.short || c.name])];
+  nav.innerHTML = items.map(([id,n])=>`<a href="${L(id)}"${id===cur?' aria-current="page"':""}>${esc(n)}</a>`).join("");
+  const lb = I.labels || { u:"中核企業", s:"関連企業" };
+  const anyNum = CO.some(hasNum), anyFlag = I.showNumbers && CO.some(c=>c.capDate);
+  document.getElementById("legend").innerHTML =
+    `<span><i class="sw" style="background:var(--util-bg);border:1px solid var(--util)"></i>${esc(lb.u)}</span>
+     <span><i class="sw" style="background:var(--sup-bg);border:1px solid var(--sup)"></i>${esc(lb.s)}</span>
+     <span><i class="sw" style="border:1.5px dashed var(--muted)"></i>未上場${anyNum?"（売上高で表示）":""}</span>
+     ${anyFlag?`<span><span class="flag" style="margin:0">時点違い</span>月末の値が取れなかった会社</span>`:""}`;
+  const m = I.meta || {};
+  document.getElementById("foot").textContent = m.capAsOf
+    ? `時価総額は${m.capAsOf}×発行済株式数で算出した概算です（「時点違い」の付いた会社は、その日付の値）。未上場企業は${m.revAsOf}の売上高です。売上高と時価総額は別の指標なので、同じ並びで比べるのは目安としてください。業界構造の理解用で、投資判断の材料ではありません。データ更新：${m.updated}`
+    : `${m.note || ""}${m.updated ? " データ更新：" + m.updated : ""}`;
+}
+
+/* ---------- 全体 ---------- */
+function bandChart(cols){
+  let h = `<div class="band" style="grid-template-columns:96px repeat(${cols.length},58px)">`;
+  h += `<div class="rl" style="border-top:0"></div>` + cols.map(c=>`<div class="ch"><a href="${coHref(c)}" title="${esc(c.name)}">${esc(c.short||c.name)}</a></div>`).join("");
+  ST.forEach(st=>{
+    h += `<div class="rl"><a href="${L(st.id)}">${esc(st.name)}</a></div>`;
+    cols.forEach(c=>{
+      const ids = stagesOf(c), i = stageIdx[st.id], first = stageIdx[ids[0]], last = stageIdx[ids[ids.length-1]];
+      const role = c.stages[st.id];
+      let cls = "cell";
+      if(role){
+        cls += ` on ${c.type}${isUnl(c)?" unl":""}`;
+        const prevOn = i>0 && c.stages[ST[i-1].id], nextOn = i<ST.length-1 && c.stages[ST[i+1].id];
+        if(!prevOn) cls += " top"; if(!nextOn) cls += " bot";
+      } else if(i>first && i<last) cls += " gap";
+      h += `<div class="${cls}"${role?` title="${esc(c.name)}｜${esc(st.name)}：${esc(role)}"`:""}></div>`;
+    });
+  });
+  return h + `</div>`;
+}
+function overview(){
+  const stations = ST.map(st=>{
+    const home = CO.filter(c=>c.home===st.id).sort(bySize);
+    const shown = home.slice(0, 7), rest = home.length - shown.length;
+    const cross = CO.filter(c=>c.home!==st.id && c.stages && c.stages[st.id]);
+    const chip = c => `<a class="co ${c.type}${isUnl(c)?" unl":""}" href="${c.page?L("co-"+c.id):L(st.id)}"><b>${esc(c.name)}${isUnl(c)&&hasNum(c)?"（未上場）":""}</b>${hasNum(c)?metric(c):`<span class="lst">${isUnl(c)?"未上場":"上場"}</span>`}</a>`;
+    return `<div class="station">
+      <div class="st-head"><a class="st-name" href="${L(st.id)}">${esc(st.name)}</a><span class="st-sub">${esc(st.sub)}</span><a class="st-more" href="${L(st.id)}">詳細 →</a></div>
+      <div class="chips">${shown.map(chip).join("")}${rest>0?`<a class="co ${home[0].type}" href="${L(st.id)}"><b>ほか${rest}社</b><span class="lst">詳細で表示</span></a>`:""}</div>
+      ${cross.length?`<p class="cross">ほかの段から関わる会社：${cross.map(c=>`<a href="${L(st.id)}">${esc(c.name)}</a>`).join("・")}</p>`:""}
+    </div>`;
+  }).join("");
+  const ep = I.endpoint || { name:"需要家", sub:"" };
+  const cols = CO.filter(multi).sort((a,b)=> stageIdx[stagesOf(a)[0]]-stageIdx[stagesOf(b)[0]] || bySize(a,b));
+  view.innerHTML = `
+  <section>
+    <div class="spine">${stations}<div class="station demand"><div class="st-head"><span class="st-name">${esc(ep.name)}</span><span class="st-sub">${esc(ep.sub)}</span></div></div></div>
+  </section>
+  ${cols.length?`<section>
+    <div class="sec-head"><h3>段をまたぐ会社</h3><p>会社ごとの縦の列。色の付いた段を自社か子会社で手がけています。</p></div>
+    <p class="scroll-hint" id="bandHint" hidden>横にスクロールすると全社を見られます →</p>
+    <div class="band-scroll" id="bandScroll">${bandChart(cols)}</div>
+    <div class="band-legend">
+      <span><i class="sw" style="background:var(--util)"></i>${esc((I.labels||{}).u||"中核企業")}</span>
+      <span><i class="sw" style="background:var(--sup)"></i>${esc((I.labels||{}).s||"関連企業")}</span>
+      <span><i class="sw" style="border:2px dashed var(--muted)"></i>未上場</span>
+      <span><i style="display:inline-block;height:14px;border-left:2px dotted var(--muted)"></i>間の段は手がけていない</span>
+    </div>
+  </section>`:""}
+  ${I.support && I.support.length ? `<section>
+    <div class="sec-head"><h3>周辺で支える会社</h3><p>流れの外から、保険・検査・資金などで業界を支える会社</p></div>
+    <div class="support">${I.support.map(s=>`<div><b>${esc(s.name)}</b><p>${esc(s.role)}</p>${s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">公式サイト ↗</a>`:""}</div>`).join("")}</div>
+  </section>` : ""}`;
+  const bs = document.getElementById("bandScroll");
+  if(bs) document.getElementById("bandHint").hidden = !(bs.scrollWidth > bs.clientWidth + 2);
+}
+
+/* ---------- 段の詳細 ---------- */
+function sector(st){
+  const i = stageIdx[st.id], prev = ST[i-1], next = ST[i+1];
+  const home = CO.filter(c=>c.home===st.id).sort(bySize);
+  const cross = CO.filter(c=>c.home!==st.id && c.stages && c.stages[st.id]).sort(bySize);
+  const max = Math.max(...home.map(size), 1);
+  const ep = I.endpoint || { name:"需要家" };
+  const row = (c, isCross) => {
+    const col = c.type==="u" ? "var(--util)" : "var(--sup)";
+    const role = c.stages[st.id] + (c.note && !isCross ? " " + c.note : "");
+    return `<div class="row${isUnl(c)?" unl":""}">
+      <div class="row-top"><b>${esc(c.name)}</b><span class="tag ${c.type}">${esc(typeLabel(c))}</span>${isCross?`<span class="tag x">主な段：${esc(stageById[c.home].name)}</span>`:""}${multi(c)?mini(c):""}${metric(c)}</div>
+      ${!isCross && hasNum(c) ? `<div class="bar"><i class="${c.cap==null?"rev":""}" style="width:${Math.max(2,size(c)/max*100)}%;background-color:${col}"></i></div>` : ""}
+      <div class="note">${esc(role)}</div>
+      ${linksRow(c)}
+    </div>`;
+  };
+  view.innerHTML = `<section>
+    <div class="flowbar">${prev?`<a href="${L(prev.id)}">← ${esc(prev.name)}</a>`:"<span>起点</span>"}<span>／</span><strong>${esc(st.name)}</strong><span>／</span>${next?`<a href="${L(next.id)}">${esc(next.name)} →</a>`:`<span>${esc(ep.name)}へ</span>`}</div>
+    <h2>${esc(st.name)}</h2><p class="role">${esc(st.role)}</p>
+    <div class="rows">${home.map(c=>row(c,false)).join("")}</div>
+    ${I.stageNotes && I.stageNotes[st.id] ? `<p class="note" style="margin-top:12px">${esc(I.stageNotes[st.id])}</p>` : ""}
+    ${cross.length?`<p class="sub-h">ほかの段から関わる会社</p><div class="rows">${cross.map(c=>row(c,true)).join("")}</div>`:""}
+  </section>`;
+}
+
+/* ---------- 企業ページ ---------- */
+function nodeHref(id){
+  const c = coById[id];
+  if(c) return coHref(c);
+  if(CM[id] && CM[id].page) return L("co-"+id);
+  const o = window.SCM_IND.find(x => x.companies.some(e => e.id === id));
+  if(o){ const e = o.companies.find(e => e.id === id); return `#${o.id}-${e.home}`; }
+  return null;
+}
+function graphSVG(g){
+  const W = 180, H = 52, nodes = Object.fromEntries(g.nodes.map(n=>[n.id,n]));
+  const edges = g.edges.map(e=>{
+    const a = nodes[e.from], b = nodes[e.to];
+    const x1 = a.x, y1 = a.y + H/2, x2 = b.x, y2 = b.y - H/2 - 4;
+    const mx = (x1+x2)/2, my = (y1+y2)/2;
+    const amt = e.amount == null ? "出資額 未確認" : "出資額 " + fmtOku(e.amount);
+    return `<line class="g-edge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#ah)"/>
+      <g class="g-lbl" transform="translate(${mx},${my})"><rect x="-58" y="-19" width="116" height="38" rx="6"/>
+      ${e.noAmount
+        ? `<text class="g-sub" text-anchor="middle" y="4">${esc(e.pct)}</text>`
+        : `<text class="g-pct" text-anchor="middle" y="-3">${esc(e.pct)}</text>
+      <text class="${e.amount==null?"g-warn":"g-sub"}" text-anchor="middle" y="12">${esc(amt)}</text>`}</g>`;
+  }).join("");
+  const ns = g.nodes.map(n=>{
+    const href = n.href || (n.link ? nodeHref(n.link) : null);
+    const box = `<rect class="g-node${n.focus?" focus":""}${/未上場/.test(n.sub||"")?" unl":""}" x="${n.x-W/2}" y="${n.y-H/2}" width="${W}" height="${H}" rx="8"/>
+      <text class="g-name" x="${n.x}" y="${n.y-3}" text-anchor="middle">${esc(n.label)}</text>
+      <text class="g-sub" x="${n.x}" y="${n.y+15}" text-anchor="middle">${esc(n.sub||"")}${href?" →":""}</text>`;
+    return href ? `<a class="g-link" href="${esc(href)}">${box}</a>` : `<g>${box}</g>`;
+  }).join("");
+  const maxY = Math.max(...g.nodes.map(n=>n.y)) + H/2 + 12;
+  return `<svg class="graph" viewBox="0 0 680 ${maxY}" role="img" aria-label="資本関係の有向グラフ">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="g-head" d="M1 1L9 5L1 9z"/></marker></defs>
+    ${edges}${ns}</svg>`;
+}
+function capitalBlock(cap){
+  const colors = { debt:"var(--debt)", hybrid:"var(--hyb)", equity:"var(--eq)" };
+  const fvVal = it => typeof it.fv === "number" ? it.fv : (it.fv === "approx" ? it.v : null);
+  const sums = cap.groups.map(g=>{
+    const fvs = g.items.map(fvVal);
+    return {...g, sum: g.items.reduce((a,b)=>a+b.v,0), fvSum: fvs.every(x=>x!=null) ? fvs.reduce((a,b)=>a+b,0) : null};
+  });
+  const total = sums.reduce((a,g)=>a+g.sum,0);
+  const fvTotal = sums.every(g=>g.fvSum!=null) ? sums.reduce((a,g)=>a+g.fvSum,0) : null;
+  const stack = sums.map(g=>{ const p = g.sum/total*100; return `<div style="width:${p}%;background:${colors[g.id]}" title="${esc(g.name)} ${fmtOku(g.sum)}">${p>=8?Math.round(p)+"%":""}</div>`; }).join("");
+  const fvCell = it => typeof it.fv === "number" ? fmtOku(it.fv)
+    : it.fv === "approx" ? `<span class="na">≈簿価</span>`
+    : `<span class="na">—${it.fvNote?`<small>${esc(it.fvNote)}</small>`:""}</span>`;
+  const lists = sums.map(g=>`<div><h4><i style="background:${colors[g.id]}"></i>${esc(g.name)}<span class="metric" style="margin-left:auto">${(g.sum/total*100).toFixed(1)}%</span></h4>
+    <table><thead><tr><th></th><th>簿価</th><th>時価</th></tr></thead><tbody>
+    ${g.items.map(it=>`<tr><td>${esc(it.name)}${it.note?`<small>${esc(it.note)}</small>`:""}</td><td class="n">${fmtOku(it.v)}</td><td class="n">${fvCell(it)}</td></tr>`).join("")}
+    <tr class="sum"><td>小計</td><td class="n">${fmtOku(g.sum)}</td><td class="n">${g.fvSum!=null?fmtOku(g.fvSum):'<span class="na">—</span>'}</td></tr>
+    </tbody></table></div>`).join("");
+  return `<section><div class="card"><div class="sec-head" style="margin:0"><h3>資本構成</h3><p>${esc(cap.asOf)}</p></div>
+    <div class="totals"><div><span class="k">簿価の合計</span><span class="v">${fmtOku(total)}</span></div><div><span class="k">時価の合計</span><span class="v">${fvTotal!=null?fmtOku(fvTotal):'<span class="na">算出不可</span>'}</span></div></div>
+    <p class="sub-h" style="margin:12px 0 0">構成比（簿価）</p>
+    <div class="stack" role="img" aria-label="負債・ハイブリッド・株式の簿価の比率">${stack}</div>
+    <div class="cap-list">${lists}</div>
+    ${cap.basisNote ? `<p class="note" style="margin:10px 0 0">${esc(cap.basisNote)}</p>` : ""}</div></section>`;
+}
+function recentBlock(r){
+  const list = items => `<ul class="plain">${items.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`;
+  return `<section><div class="card">
+    <div class="sec-head" style="margin:0"><h3>${esc(r.title)}</h3><p>${esc(r.period)}</p></div>
+    <div class="facts" style="margin:10px 0 4px">${r.kpis.map(k=>`<div class="fact"><span class="k">${esc(k.k)}</span><span class="v">${esc(k.v)}</span>${k.d?`<span class="d">${esc(k.d)}</span>`:""}</div>`).join("")}</div>
+    <div class="two">
+      <div><p class="sub-h">${esc(r.driversTitle || "稼いだ理由")}</p>${list(r.drivers)}</div>
+      <div><p class="sub-h">${esc(r.downstreamTitle || "その裏で")}</p>${list(r.downstream)}</div>
+    </div>
+    ${r.groupNote?`<p class="callout">${esc(r.groupNote)}</p>`:""}
+    ${r.sources?`<p class="src">出典：${r.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.t)}</a>`).join("／")}</p>`:""}
+  </div></section>`;
+}
+function company(id, P){
+  const c = coById[id] || { id, ...CM[id], stages:{} };
+  const here = coById[id];
+  const stageCards = here ? stagesOf(here).map(sid=>`<a href="${L(sid)}"><b>${esc(stageById[sid].name)} →</b><span>${esc(here.stages[sid])}</span></a>`).join("") : "";
+  const others = otherInds(id).map(o=>{
+    const ids = Object.keys(o.entry.stages||{}).sort((a,b)=>o.ind.stages.findIndex(s=>s.id===a)-o.ind.stages.findIndex(s=>s.id===b));
+    return `<p class="sub-h">${esc(o.ind.name)}で関わる段</p><div class="stage-links">${ids.map(sid=>{ const st = o.ind.stages.find(s=>s.id===sid); return `<a href="#${o.ind.id}-${sid}"><b>${esc(st ? st.name : sid)} →</b><span>${esc(o.entry.stages[sid])}</span></a>`; }).join("")}</div>`;
+  }).join("");
+  view.innerHTML = `<section>
+    <div class="flowbar"><a href="${L("overview")}">← ${esc(I.name)}の全体</a>${here?`<span>／</span><a href="${L(here.home)}">${esc(stageById[here.home].name)}</a>`:""}<span>／</span><strong>${esc(c.name)}</strong></div>
+    <div class="row-top" style="margin-bottom:4px"><h2 style="margin:0">${esc(c.name)}</h2><span class="tag ${c.type||"x"}">${isUnl(c)?"未上場":"上場"}</span>${here?mini(here):""}</div>
+    <p class="role">${esc(P.summary || "")}</p>
+    ${linksRow(c,{onPage:true})}
+    ${P.facts && P.facts.length ? `<div class="facts">${P.facts.map(f=>`<div class="fact"><span class="k">${esc(f.k)}</span><span class="v">${esc(f.v)}</span></div>`).join("")}</div>` : ""}
+    ${stageCards ? `<p class="sub-h">${esc(I.name)}で関わる段</p><div class="stage-links">${stageCards}</div>` : ""}
+    ${others}
+  </section>
+  ${P.recent ? recentBlock(P.recent) : ""}
+  ${P.graph ? `<section><div class="card">
+    <div class="sec-head" style="margin:0"><h3>資本関係</h3><p>矢印は出資する側から出資される側へ。数字は持ち株比率。</p></div>
+    <div class="graph-scroll">${graphSVG(P.graph)}</div>
+    ${P.graph.note ? `<p class="note" style="margin:6px 0 0">${esc(P.graph.note)}</p>` : ""}
+  </div></section>` : ""}
+  ${P.capital ? capitalBlock(P.capital) : ""}`;
+  const gs = view.querySelector(".graph-scroll");
+  if(gs && gs.scrollWidth > gs.clientWidth) gs.scrollLeft = (gs.scrollWidth - gs.clientWidth)/2;
+}
+
+/* ---------- 振り分け ----------
+   #power, #power-fuel, #power-co-jera, #shipping-owner … のように「業界-表示」で指定
+   業界の付いていない古いリンク（#fuel, #co-jera）は最初の業界として扱う */
+function parse(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if(!h) return { id: INDEX[0].id, v: "overview" };
+  const e = INDEX.find(x => h === x.id || h.startsWith(x.id + "-"));
+  if(e) return { id: e.id, v: h === e.id ? "overview" : h.slice(e.id.length + 1) };
+  return { id: INDEX[0].id, v: h };
+}
+let lastKey = null, seq = 0;
+async function route(){
+  const my = ++seq;
+  const { id, v } = parse();
+  let ind;
+  try { ind = await loadInd(id); } catch(e){
+    view.innerHTML = `<p class="note">${esc(id)} のデータファイルを読み込めませんでした。industries.js の file の指定を確認してください。</p>`; return;
+  }
+  const P = v.startsWith("co-") ? await loadPage(v.slice(3)) : null;
+  if(my !== seq) return;
+  use(ind);
+  const st = stageById[v];
+  if(st){ chrome(v); sector(st); }
+  else if(P && CM[v.slice(3)]){ chrome(v); company(v.slice(3), P); }
+  else { chrome("overview"); overview(); }
+  const key = id + "|" + v;
+  if(lastKey && lastKey !== key && (st || P || lastKey.split("|")[0] !== id)) window.scrollTo({top:0});
+  lastKey = key;
+}
+addEventListener("hashchange", route);
+/* 表示中の業界を先に出し、残りの業界は後から読み込んで、業界をまたぐリンクを付け足す */
+route().then(() => Promise.allSettled(INDEX.map(x => loadInd(x.id)))).then(() => {
+  const y = window.scrollY; route().then(() => window.scrollTo({top:y}));
+});
+})();
+</script>
