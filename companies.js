@@ -239,7 +239,9 @@ window.SCM_COMPANIES = {
     "name": "今治造船",
     "short": "今治造船",
     "listed": false,
-    "url": "https://www.imazo.co.jp/"
+    "url": "https://www.imazo.co.jp/",
+    "note": "創業家の檜垣家が経営する非上場企業。2026年1月にJMUを子会社化。",
+    "page": true
   },
   "jmu": {
     "name": "ジャパンマリンユナイテッド（JMU）",

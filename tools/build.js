@@ -156,6 +156,10 @@ for(const f of pageFiles){
       if(!e.pct) warn(`pages/${f}: ${e.from}→${e.to} に pct（比率）がありません`);
     }
   }
+  for(const r of P.research || []){
+    if(!r.kind || !r.what) err(`pages/${f}: research に kind か what のないものがあります`);
+    if(r.src && !/^https?:\/\//.test(r.src.url || "")) err(`pages/${f}: research「${r.kind}」の src.url が http で始まっていません`);
+  }
   if(P.capital) for(const g of P.capital.groups || []) for(const it of g.items || [])
     if(typeof it.v !== "number") err(`pages/${f}: 資本構成 "${it.name}" の v（簿価）が数値ではありません`);
 }

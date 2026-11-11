@@ -74,6 +74,14 @@ SCM.views.company = (function(){
     </div></section>`;
   }
 
+  /* どこから調べたか（未上場企業の調べ方の例にもなる） */
+  function researchBlock(items){
+    return `<section><div class="card">
+      <div class="sec-head" style="margin:0"><h3>どこから調べたか</h3><p>このページの情報源と、そこからわかること</p></div>
+      <ol class="research">${items.map(r => `<li><b>${esc(r.kind)}</b><p>${esc(r.what)}</p>${r.src ? `<a href="${esc(r.src.url)}" target="_blank" rel="noopener">${esc(r.src.t)} ↗</a>` : ""}</li>`).join("")}</ol>
+    </div></section>`;
+  }
+
   async function render(id){
     const base = S.CM[id];
     const apps = S.appearances(id);
@@ -119,7 +127,7 @@ SCM.views.company = (function(){
     const view = document.getElementById("view");
     view.innerHTML = `<section>
       ${P && P.summary ? `<p class="role">${esc(P.summary)}</p>` : ""}
-      ${c.note ? `<p class="note" style="margin:0 0 12px">${esc(c.note)}</p>` : ""}
+      ${c.note && !(P && P.summary) ? `<p class="note" style="margin:0 0 12px">${esc(c.note)}</p>` : ""}
       ${links.row(c, null, { noCompany: true, noOthers: true })}
       ${facts.length ? `<div class="facts">${facts.map(f => `<div class="fact"><span class="k">${esc(f.k)}</span><span class="v">${esc(f.v)}</span></div>`).join("")}</div>` : ""}
       <p class="sub-h">${apps.length > 1 ? `${apps.length}つの業界に出てきます` : "関わる段"}</p>
@@ -133,7 +141,8 @@ SCM.views.company = (function(){
       <div class="graph-scroll">${graphSVG(P.graph)}</div>
       ${P.graph.note ? `<p class="note" style="margin:6px 0 0">${esc(P.graph.note)}</p>` : ""}
     </div></section>` : ""}
-    ${P && P.capital ? capitalBlock(P.capital) : ""}`;
+    ${P && P.capital ? capitalBlock(P.capital) : ""}
+    ${P && P.research && P.research.length ? researchBlock(P.research) : ""}`;
     const gs = view.querySelector(".graph-scroll");
     if(gs && gs.scrollWidth > gs.clientWidth) gs.scrollLeft = (gs.scrollWidth - gs.clientWidth) / 2;
   }
