@@ -450,6 +450,7 @@ window.SCM_COMPANIES = {
     "note": "米エクイニクスの日本法人。親会社は米国で上場。"
   },
   "mcdr": {
+    "page": true,
     "name": "MCデジタル・リアルティ",
     "short": "MC DR",
     "listed": false,
