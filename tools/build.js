@@ -29,8 +29,19 @@ run("industries.js");
 run("companies.js");
 const W = sandbox.window;
 const INDEX = W.SCM_INDEX || [];
+const AREAS = W.SCM_AREAS || [];
 const CM = W.SCM_COMPANIES || {};
 if(!INDEX.length) err("industries.js に業界がありません");
+if(!AREAS.length) err("industries.js に領域（SCM_AREAS）がありません");
+
+const areaIds = new Set();
+for(const a of AREAS){
+  if(!a.id || !a.name){ err(`industries.js: 領域に id か name のないものがあります: ${JSON.stringify(a)}`); continue; }
+  if(!/^[a-z0-9]+$/.test(a.id)) err(`industries.js: 領域ID "${a.id}" は英小文字と数字だけにしてください`);
+  if(areaIds.has(a.id)) err(`industries.js: 領域ID "${a.id}" が重複しています`);
+  areaIds.add(a.id);
+  if(a.planned !== undefined && !Array.isArray(a.planned)) err(`industries.js: 領域 "${a.id}" の planned は配列にしてください`);
+}
 
 const seenInd = new Set();
 for(const e of INDEX){
@@ -39,6 +50,9 @@ for(const e of INDEX){
   if(seenInd.has(e.id)) err(`industries.js: 業界ID "${e.id}" が重複しています`);
   seenInd.add(e.id);
   if(e.id === "co" || e.id === "home") err(`industries.js: 業界ID "${e.id}" は予約語なので使えません`);
+  if(!e.area) err(`industries.js: 業界 "${e.id}" に area（領域ID）がありません`);
+  else if(!areaIds.has(e.area)) err(`industries.js: 業界 "${e.id}" の area "${e.area}" は領域の一覧にありません`);
+  for(const a of AREAS) if((a.planned || []).includes(e.name)) warn(`industries.js: 業界「${e.name}」はもう作ってあるので、領域「${a.name}」の planned から消せます`);
   const before = (W.SCM_IND || []).length;
   if(run(e.file)){
     const added = (W.SCM_IND || []).slice(before);

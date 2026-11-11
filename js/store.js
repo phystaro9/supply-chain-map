@@ -6,7 +6,10 @@ SCM.store = (function(){
   window.SCM_IND = window.SCM_IND || [];
   window.SCM_PAGES = window.SCM_PAGES || {};
 
+  const AREAS = window.SCM_AREAS || [];
+  const areaMeta = id => AREAS.find(x => x.id === id);
   const indMeta = id => INDEX.find(x => x.id === id);
+  const areaOfInd = id => areaMeta((indMeta(id) || {}).area);
   const indOrder = id => INDEX.findIndex(x => x.id === id);
   const loaded = id => window.SCM_IND.find(x => x.id === id);
 
@@ -30,7 +33,7 @@ SCM.store = (function(){
   const stageName = (ind, st) => (X.stages[ind] || {})[st] || st;
   const indName = id => (indMeta(id) || {}).name || id;
 
-  return { INDEX, CM, X, indMeta, loadInd, loadPage, appearances, stageName, indName };
+  return { INDEX, AREAS, CM, X, areaMeta, areaOfInd, indMeta, loadInd, loadPage, appearances, stageName, indName };
 })();
 
 /* リンクの組み立て（どの画面からも使う） */

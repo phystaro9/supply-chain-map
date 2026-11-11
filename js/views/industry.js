@@ -41,7 +41,7 @@ SCM.views.industry = (function(){
     document.title = (I.title || I.name) + "地図";
     const items = [["overview", "全体"], ...x.ST.map(s => [s.id, s.name])];
     document.getElementById("head").innerHTML = `
-      <div class="crumbs"><a href="#home">業界一覧</a><span>›</span><span>${esc(I.name)}</span></div>
+      <div class="crumbs"><a href="#home">業界一覧</a><span>›</span>${SCM.store.areaOfInd(I.id) ? `<span>${esc(SCM.store.areaOfInd(I.id).name)}</span><span>›</span>` : ""}<span>${esc(I.name)}</span></div>
       <h1>${esc(I.title || I.name)}地図</h1>
       <p class="lede">${esc(I.lede || "")}段や会社を選ぶと詳細を表示します。</p>
       <nav aria-label="段">${items.map(([id, n]) => `<a href="${x.L(id)}"${id === cur ? ' aria-current="page"' : ""}>${esc(n)}</a>`).join("")}</nav>`;
