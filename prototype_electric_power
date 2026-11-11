@@ -1,0 +1,134 @@
+<title>電力サプライチェーン地図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a vertical "power line" spine linking sector stations, top to bottom from fuel to customers */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dbe1;
+  --util:#0f6e5c; --util-bg:#e2f3ee; --sup:#4b43a6; --sup-bg:#ecebfb; --volt:#c98a00;
+  --display:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
+  --body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f151b; --panel:#17212a; --ink:#e4eaef; --muted:#97a4ae; --line:#2b3843;
+  --util:#5ccfb4; --util-bg:#123029; --sup:#a9a3f2; --sup-bg:#221f45; --volt:#f0b93a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --panel:#17212a; --ink:#e4eaef; --muted:#97a4ae; --line:#2b3843;
+  --util:#5ccfb4; --util-bg:#123029; --sup:#a9a3f2; --sup-bg:#221f45; --volt:#f0b93a; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:var(--display);font-weight:700;font-size:1.6rem;margin:0;text-wrap:balance;letter-spacing:.02em}
+.lede{color:var(--muted);margin:4px 0 16px;font-size:.9rem}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;scrollbar-width:thin}
+nav a{flex:none;text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.85rem;background:var(--panel)}
+nav a[aria-current="page"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+nav a:focus-visible,.station:focus-visible,.co:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+.spine{position:relative;display:flex;flex-direction:column;gap:14px;padding-left:22px}
+.spine::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:repeating-linear-gradient(var(--volt) 0 8px,transparent 8px 13px)}
+.station{position:relative;display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.station::before{content:"";position:absolute;left:-21px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--volt)}
+.station:hover{border-color:var(--muted)}
+.st-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.st-name{font-family:var(--display);font-weight:700;font-size:1.05rem}
+.st-sub{color:var(--muted);font-size:.8rem}
+.st-more{margin-left:auto;color:var(--muted);font-size:.8rem}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.co{border-radius:8px;padding:7px 10px;border:1px solid transparent;min-width:0}
+.co.u{background:var(--util-bg);color:var(--util)}
+.co.s{background:var(--sup-bg);color:var(--sup)}
+.co.unl{background:transparent;border:1.5px dashed currentColor}
+.co b{display:block;font-weight:500;font-size:.92rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric{font-family:var(--mono);font-size:.78rem;font-variant-numeric:tabular-nums}
+.metric .k{font-family:var(--body);margin-right:4px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--muted);margin:18px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.demand{padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel)}
+.detail h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:0 0 4px}
+.detail .role{max-width:62ch;margin:0 0 18px}
+.flowbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.flowbar a{color:var(--muted)}
+.flowbar strong{color:var(--ink);font-weight:500}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:6px}
+.row.unl{border-style:dashed;border-width:1.5px}
+.row-top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.row-top b{font-weight:500;font-size:1rem}
+.tag{font-size:.72rem;border-radius:999px;padding:1px 8px}
+.tag.u{background:var(--util-bg);color:var(--util)}
+.tag.s{background:var(--sup-bg);color:var(--sup)}
+.row-top .metric{margin-left:auto;font-size:.9rem}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px}
+.note{color:var(--muted);font-size:.85rem;min-width:0}
+.asof{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.foot{margin-top:28px;font-size:.78rem;color:var(--muted);max-width:70ch}
+@media (prefers-reduced-motion:no-preference){.detail,.spine{animation:fade .25s ease-out}@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="wrap">
+  <h1>電力サプライチェーン地図</h1>
+  <p class="lede">燃料から需要家まで、日本の電力の流れと代表企業。セクターを選ぶと詳細を表示します。</p>
+  <nav id="nav" aria-label="セクター"></nav>
+  <main id="view"></main>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--util-bg);border:1px solid var(--util)"></i>電力会社</span>
+    <span><i class="sw" style="background:var(--sup-bg);border:1px solid var(--sup)"></i>関連・供給企業</span>
+    <span><i class="sw" style="border:1.5px dashed var(--muted)"></i>未上場（売上高で表示）</span>
+  </div>
+  <p class="foot">時価総額は2026年10〜11月時点の概算、未上場企業の売上高は2026年3月期実績。古河電工は11/5の株価からの推計値。時価総額と売上高は異なる指標のため、直接比較はできません。投資判断の材料ではなく、業界構造の理解用です。</p>
+</div>
+
+<script>
+const S=[
+ {id:"fuel",name:"燃料・資源",sub:"LNG・石油・石炭・ウラン",role:"発電所で燃やす燃料を調達・開発する段階。日本はLNGと石炭の大半を輸入に頼り、上流権益を持つ開発会社や商社、大手電力系の調達会社が担います。燃料価格は燃料費調整制度を通じて電気料金に反映されます。",
+  cos:[{n:"INPEX",t:"s",cap:4.4,d:"11/9",note:"国内最大の石油・天然ガス開発会社。豪イクシスLNGなど上流権益を保有。"}]},
+ {id:"equipment",name:"発電設備",sub:"タービン・原子炉・変電機器",role:"発電所や変電所の大型機器をつくる重電メーカー。ガスタービン、原子炉、発電機、変圧器などを供給し、データセンター向けの電力需要増で受注が伸びています。",
+  cos:[{n:"日立製作所",t:"s",cap:22.1,d:"11/5",note:"日立エナジーの送配電機器が成長の柱。原子力も手がける。"},
+       {n:"三菱重工業",t:"s",cap:10.6,d:"11/10",note:"大型ガスタービン（GTCC）と原子力プラントの国内最大手。"},
+       {n:"三菱電機",t:"s",cap:10.2,d:"11/9",note:"発電機、変電・受配電機器、パワー半導体。"},
+       {n:"東芝",t:"s",rev:3.7,d:"26/3期",note:"原子力、火力・水力発電機器、送変電・配電機器。2023年に上場廃止。"}]},
+ {id:"generation",name:"発電・小売",sub:"大手電力・火力・再エネ",role:"電気をつくり、家庭や企業に売る段階。大手電力10社は地域ごとに発電と小売を担い、火力の大部分は東京電力と中部電力の合弁JERAに集約されています。原発の再稼働状況が各社の収益力を大きく左右します。",
+  cos:[{n:"関西電力",t:"u",cap:2.95,d:"10/9",note:"原子力比率が高く、大手電力で収益力トップ。"},
+       {n:"中部電力",t:"u",cap:2.02,d:"10/9",note:"JERAの持分法利益が業績に寄与。"},
+       {n:"キューデンHD",t:"u",cap:0.94,d:"10/9",note:"九州電力の持株会社。原発稼働が安定。"},
+       {n:"東京電力HD",t:"u",cap:0.84,d:"10/9",note:"国内最大の電力会社。福島第一の廃炉費用が重荷。"},
+       {n:"Jパワー（電源開発）",t:"u",cap:0.70,d:"10/9",note:"石炭火力と水力が中心の卸電力会社。"},
+       {n:"東北電力",t:"u",cap:0.64,d:"10/9",note:"東北7県と新潟に供給。"},
+       {n:"四国電力",t:"u",cap:0.45,d:"10/9",note:"伊方原発を保有。"},
+       {n:"中国電力",t:"u",cap:0.39,d:"10/9",note:"石炭火力の比率が高い。"},
+       {n:"北海道電力",t:"u",cap:0.24,d:"10/9",note:"半導体工場進出で需要増に期待。"},
+       {n:"北陸電力",t:"u",cap:0.23,d:"10/9",note:"水力の比率が高い。"},
+       {n:"レノバ",t:"u",cap:0.077,d:"10/9",note:"再生可能エネルギー専業の発電事業者。"},
+       {n:"JERA",t:"u",rev:3.05,d:"26/3期",note:"東京電力と中部電力が折半出資。国内火力発電の約3割を担う。"}]},
+ {id:"grid",name:"送配電網",sub:"一般送配電事業者",role:"発電所から需要家まで電気を届ける送電線・配電線を運用する段階。発送電分離により大手電力の子会社として独立し、託送料金で収益を得る規制事業です。各社とも未上場です。",
+  cos:[{n:"東京電力パワーグリッド",t:"u",rev:2.29,d:"26/3期",note:"首都圏の送配電網を運用。国内最大の送配電会社。"}],
+  extra:"関西電力送配電、中部電力パワーグリッドなど他の送配電会社も、それぞれ大手電力の完全子会社です。"},
+ {id:"cables",name:"送配電資材",sub:"電線・ケーブル",role:"送電線、地中・海底ケーブル、光ファイバーをつくる電線メーカー。送電網の更新や洋上風力、データセンター向けの需要で2025〜26年に株価が大きく上昇し、11月初旬に急落しました。",
+  cos:[{n:"フジクラ",t:"s",cap:5.5,d:"11/10",note:"データセンター向け光ファイバー・コネクタで急成長。"},
+       {n:"住友電気工業",t:"s",cap:4.3,d:"11/6",note:"電線最大手。超高圧・海底ケーブルに強い。"},
+       {n:"古河電気工業",t:"s",cap:1.5,d:"11/5推計",note:"光ファイバーで世界大手。電力ケーブルも。"}]},
+ {id:"construction",name:"電気工事",sub:"設備・配電工事",role:"送配電線の工事や、ビル・工場・データセンターの電気設備工事を担う会社。大手電力系列が多く、旺盛な建設投資で最高益が続いています。",
+  cos:[{n:"関電工",t:"s",cap:1.1,d:"9/16",note:"東京電力系の電気工事大手。東電向けが約3割。"},
+       {n:"きんでん",t:"s",cap:1.0,d:"11/2",note:"関西電力系。筆頭株主は関西電力（約29%）。"}]},
+];
+const fmt=v=>v>=1?v.toFixed(v>=10?1:(v%1?2:1)).replace(/0$/,"").replace(/\.$/,"")+"兆円":Math.round(v*10000).toLocaleString()+"億円";
+const metric=c=>c.rev!=null?`<span class="metric"><span class="k">売上高</span>${fmt(c.rev)}</span>`:`<span class="metric"><span class="k">時価総額</span>${fmt(c.cap)}</span>`;
+const nav=document.getElementById("nav"),view=document.getElementById("view");
+function renderNav(cur){nav.innerHTML=[["overview","全体"],...S.map(s=>[s.id,s.name])].map(([id,n])=>`<a href="#${id}"${id===cur?' aria-current="page"':''}>${n}</a>`).join("")}
+function overview(){
+  view.innerHTML=`<div class="spine">${S.map(s=>`<a class="station" href="#${s.id}"><div class="st-head"><span class="st-name">${s.name}</span><span class="st-sub">${s.sub}</span><span class="st-more">詳細 →</span></div><div class="chips">${(s.id==="generation"?[...s.cos.slice(0,6),s.cos[s.cos.length-1]]:s.cos).map(c=>`<div class="co ${c.t}${c.rev!=null?" unl":""}"><b>${c.n}${c.rev!=null?"（未上場）":""}</b>${metric(c)}</div>`).join("")}${s.id==="generation"?`<div class="co u"><b>ほか5社</b><span class="metric">詳細で表示</span></div>`:""}</div></a>`).join("")}<div class="station demand"><div class="st-head"><span class="st-name">需要家</span><span class="st-sub">家庭・工場・オフィス・データセンター</span></div></div></div>`;
+}
+function detail(s){
+  const i=S.indexOf(s),prev=S[i-1],next=S[i+1];
+  const listed=s.cos.filter(c=>c.cap!=null),max=Math.max(...listed.map(c=>c.cap),0);
+  const rows=[...listed.sort((a,b)=>b.cap-a.cap),...s.cos.filter(c=>c.rev!=null)];
+  view.innerHTML=`<section class="detail"><div class="flowbar">${prev?`<a href="#${prev.id}">← ${prev.name}</a>`:"<span>起点</span>"}<span>／</span><strong>${s.name}</strong><span>／</span>${next?`<a href="#${next.id}">${next.name} →</a>`:"<span>需要家へ</span>"}</div>
+  <h2>${s.name}</h2><p class="role">${s.role}</p>
+  <div class="rows">${rows.map(c=>{const unl=c.rev!=null,col=c.t==="u"?"var(--util)":"var(--sup)";return `<div class="row${unl?" unl":""}"><div class="row-top"><b>${c.n}</b><span class="tag ${c.t}">${unl?"未上場":c.t==="u"?"電力会社":"関連企業"}</span>${metric(c)}</div>${unl?"":`<div class="bar"><i style="width:${Math.max(2,c.cap/max*100)}%;background:${col}"></i></div>`}<div class="note">${c.note} <span class="asof">${c.d}</span></div></div>`}).join("")}</div>
+  ${s.extra?`<p class="note" style="margin-top:12px">${s.extra}</p>`:""}</section>`;
+}
+function route(){const id=location.hash.slice(1),s=S.find(x=>x.id===id);renderNav(s?id:"overview");s?detail(s):overview();if(s)window.scrollTo({top:0})}
+addEventListener("hashchange",route);route();
+</script>
