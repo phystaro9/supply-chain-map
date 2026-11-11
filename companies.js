@@ -404,6 +404,7 @@ window.SCM_COMPANIES = {
     "url": "https://www.nipponexpress-holdings.com/"
   },
   "kwe": {
+    "page": true,
     "name": "近鉄エクスプレス",
     "short": "近鉄エクス",
     "listed": false,
