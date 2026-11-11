@@ -180,6 +180,7 @@ window.SCM_COMPANIES = {
     "cap": 658
   },
   "tepco-ep": {
+    "page": true,
     "name": "東京電力エナジーパートナー",
     "short": "東電EP",
     "listed": false,
