@@ -20,7 +20,9 @@ SCM.views.company = (function(){
         <text class="${e.amount == null ? "g-warn" : "g-sub"}" text-anchor="middle" y="12">${esc(amt)}</text>`}</g>`;
     }).join("");
     const ns = g.nodes.map(n => {
-      const href = n.href || (n.link && S.CM[n.link] ? links.company(n.link) : null);
+      /* 会社IDが companies.js にあれば、その企業ページへのリンクにする（link を書かなくても、node の id が会社IDなら自動） */
+      const cid = n.link || (!n.focus && S.CM[n.id] ? n.id : null);
+      const href = n.href || (cid && S.CM[cid] ? links.company(cid) : null);
       const box = `<rect class="g-node${n.focus ? " focus" : ""}${/未上場/.test(n.sub || "") ? " unl" : ""}" x="${n.x - W / 2}" y="${n.y - H / 2}" width="${W}" height="${H}" rx="8"/>
         <text class="g-name" x="${n.x}" y="${n.y - 3}" text-anchor="middle">${esc(n.label)}</text>
         <text class="g-sub" x="${n.x}" y="${n.y + 15}" text-anchor="middle">${esc(n.sub || "")}${href ? " →" : ""}</text>`;

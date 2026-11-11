@@ -4,7 +4,7 @@
   ------------------------------------------------------------
   使い方:  node tools/check-view.js
   ・横にはみ出すページがないか
-  ・文字が小さすぎないか（図の中の文字は、縮み率をかけた実際の大きさで測る。下限は12.5px）
+  ・文字が小さすぎないか（本文などは16px、図の中の文字は縮み率をかけた実際の大きさで12.5pxが下限）
   ・スクリプトのエラーが出ていないか
   どれかに当てはまると、内容を並べて終了コード1で止まる。
   必要なもの: playwright（node から require できること）
@@ -14,7 +14,7 @@ const { chromium } = require("playwright");
 
 const ROOT = path.resolve(__dirname, "..");
 const URL = "file://" + path.join(ROOT, "index.html");
-const MIN_FONT = 12.5;
+const MIN_FONT = 15.5, MIN_FONT_SVG = 12.5;
 
 (async () => {
   const browser = await chromium.launch();
@@ -48,7 +48,7 @@ const MIN_FONT = 12.5;
       await page.goto(URL + h);
       await page.waitForTimeout(350);
       const r = await page.evaluate(() => {
-        let min = 99, minTxt = "";
+        let min = 99, minTxt = "", minSvg = 99, minSvgTxt = "";
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         for (let n = walker.nextNode(); n; n = walker.nextNode()) {
           const t = n.textContent.trim();
@@ -58,13 +58,16 @@ const MIN_FONT = 12.5;
           if (cs.display === "none" || cs.visibility === "hidden") continue;
           let fs = parseFloat(cs.fontSize);
           const svg = el.closest("svg");
-          if (svg && svg.getScreenCTM()) fs *= svg.getScreenCTM().a;
-          if (fs < min) { min = fs; minTxt = t.slice(0, 16); }
+          if (svg) {
+            if (svg.getScreenCTM()) fs *= svg.getScreenCTM().a;
+            if (fs < minSvg) { minSvg = fs; minSvgTxt = t.slice(0, 16); }
+          } else if (fs < min) { min = fs; minTxt = t.slice(0, 16); }
         }
-        return { over: document.documentElement.scrollWidth > innerWidth, min: +min.toFixed(1), minTxt, empty: document.getElementById("view").innerText.trim().length < 20 };
+        return { over: document.documentElement.scrollWidth > innerWidth, min: +min.toFixed(1), minTxt, minSvg: +minSvg.toFixed(1), minSvgTxt, empty: document.getElementById("view").innerText.trim().length < 20 };
       });
       if (r.over) problems.push(`${width}px ${h}: 横にはみ出しています`);
       if (r.min < MIN_FONT) problems.push(`${width}px ${h}: 文字が小さすぎます（${r.min}px「${r.minTxt}」）`);
+      if (r.minSvg < MIN_FONT_SVG) problems.push(`${width}px ${h}: 図の中の文字が小さすぎます（${r.minSvg}px「${r.minSvgTxt}」）`);
       if (r.empty) problems.push(`${width}px ${h}: 中身が表示されていません`);
     }
     for (const e of [...new Set(errors)]) problems.push(`${width}px: スクリプトのエラー: ${e}`);
