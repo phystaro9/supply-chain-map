@@ -22,6 +22,9 @@ js/views/industry.js  業界の全体図・段をまたぐ会社の帯・段の�
 js/views/company.js   企業ページ（全社に自動で用意）
 js/app.js             起動、URLの振り分け、会社検索
 tools/build.js        データの点検と xref.js の生成
+tools/check-view.js   表示の点検（スマホ幅で、はみ出し・小さすぎる文字・エラーを調べる）
+CLAUDE.md             作業の決まり（業界を足す手順、止まるとき）。自動実行もこれに従う
+QUEUE.md              これから追加する業界の順番
 prototype_electric_power.html  旧URLからの転送用
 ```
 

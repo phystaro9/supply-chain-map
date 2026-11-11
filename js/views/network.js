@@ -117,7 +117,7 @@ SCM.views.network = (function(){
     }).join("");
     const badgeSvg = gs.map((g, i) => {
       const p = geoms[i]; if(!p) return "";
-      return `<g class="n-edge" ${edgeData(g, i)}><circle class="cnt" cx="${p.mx.toFixed(1)}" cy="${p.my.toFixed(1)}" r="14"/><text x="${p.mx.toFixed(1)}" y="${(p.my + 5.5).toFixed(1)}" text-anchor="middle">${g.deps.length}</text></g>`;
+      return `<g class="n-edge" ${edgeData(g, i)}><circle class="cnt" cx="${p.mx.toFixed(1)}" cy="${p.my.toFixed(1)}" r="15"/><text x="${p.mx.toFixed(1)}" y="${(p.my + 6).toFixed(1)}" text-anchor="middle">${g.deps.length}</text></g>`;
     }).join("");
 
     const nodeSvg = Object.values(nodes).map(n => `<g class="n-node" data-id="${n.e.id}" tabindex="0" role="button">
