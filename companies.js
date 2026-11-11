@@ -72,6 +72,7 @@ window.SCM_COMPANIES = {
     ]
   },
   "toshiba": {
+    "page": true,
     "name": "東芝",
     "short": "東芝",
     "listed": false,
