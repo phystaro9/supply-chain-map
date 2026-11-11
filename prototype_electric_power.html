@@ -125,6 +125,13 @@ a.co:hover b{text-decoration:underline}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
 .graph-scroll{overflow-x:auto}
 .graph-scroll svg{display:block;width:100%;min-width:560px;height:auto}
+.fact .d{display:block;font-size:.74rem;color:var(--muted);margin-top:2px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 20px}
+.two>div{min-width:0}
+ul.plain{margin:0;padding-left:1.1em;font-size:.88rem;display:grid;gap:5px}
+.callout{margin:14px 0 0;padding:10px 12px;border-left:4px solid var(--volt);border-radius:0;background:var(--bg);font-size:.88rem}
+.src{margin:10px 0 0;font-size:.74rem;color:var(--muted)}
+.src a{color:var(--muted)}
 .graph{font-family:var(--body)}
 .graph .g-edge{stroke:var(--muted);stroke-width:1.5}
 .graph .g-head{fill:var(--muted)}
@@ -361,6 +368,19 @@ function capitalBlock(cap){
     <div class="cap-list">${lists}</div>
     ${cap.basisNote ? `<p class="note" style="margin:10px 0 0">${esc(cap.basisNote)}</p>` : ""}</div>`;
 }
+function recentBlock(r){
+  const list = items => `<ul class="plain">${items.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`;
+  return `<section><div class="card">
+    <div class="sec-head" style="margin:0"><h3>${esc(r.title)}</h3><p>${esc(r.period)}</p></div>
+    <div class="facts" style="margin:10px 0 4px">${r.kpis.map(k=>`<div class="fact"><span class="k">${esc(k.k)}</span><span class="v">${esc(k.v)}</span>${k.d?`<span class="d">${esc(k.d)}</span>`:""}</div>`).join("")}</div>
+    <div class="two">
+      <div><p class="sub-h">JERAが稼いだ理由</p>${list(r.drivers)}</div>
+      <div><p class="sub-h">その裏で：大手電力の小売側</p>${list(r.downstream)}</div>
+    </div>
+    ${r.groupNote?`<p class="callout">${esc(r.groupNote)}</p>`:""}
+    ${r.sources?`<p class="src">出典：${r.sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.t)}</a>`).join("／")}</p>`:""}
+  </div></section>`;
+}
 function company(c){
   const P = D.pages[c.id];
   const stageCards = stagesOf(c).map(id=>`<a href="#${id}"><b>${esc(stageById[id].name)} →</b><span>${esc(c.stages[id])}</span></a>`).join("");
@@ -373,6 +393,7 @@ function company(c){
     <p class="sub-h">関わる段</p>
     <div class="stage-links">${stageCards}</div>
   </section>
+  ${P.recent ? recentBlock(P.recent) : ""}
   <section><div class="card">
     <div class="sec-head" style="margin:0"><h3>資本関係</h3><p>矢印は出資する側から出資される側へ。数字は持ち株比率。</p></div>
     <div class="graph-scroll">${graphSVG(P.graph)}</div>
