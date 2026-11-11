@@ -4,10 +4,11 @@ window.SCM_XREF = {
   "power": {
    "fuel": "燃料・資源",
    "equipment": "発電設備",
-   "generation": "発電・小売",
-   "grid": "送配電網",
    "cables": "送配電資材",
-   "construction": "電気工事"
+   "construction": "電気工事",
+   "generation": "発電",
+   "grid": "送配電網",
+   "retail": "小売"
   },
   "shipping": {
    "shipbuilding": "造船・舶用機器",
@@ -123,18 +124,20 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
   "chuden": [
    {
     "ind": "power",
-    "home": "generation",
+    "home": "retail",
     "stages": [
+     "construction",
      "generation",
      "grid",
-     "construction"
+     "retail"
     ]
    }
   ],
@@ -144,17 +147,19 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
   "tepco": [
    {
     "ind": "power",
-    "home": "generation",
+    "home": "retail",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
@@ -174,7 +179,8 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
@@ -184,7 +190,8 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
@@ -194,7 +201,8 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
@@ -204,7 +212,8 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    },
    {
@@ -221,7 +230,8 @@ window.SCM_XREF = {
     "home": "generation",
     "stages": [
      "generation",
-     "grid"
+     "grid",
+     "retail"
     ]
    }
   ],
@@ -306,8 +316,8 @@ window.SCM_XREF = {
     "ind": "power",
     "home": "construction",
     "stages": [
-     "generation",
-     "construction"
+     "construction",
+     "generation"
     ]
    },
    {
@@ -711,7 +721,7 @@ window.SCM_XREF = {
  },
  "counts": {
   "power": {
-   "stages": 6,
+   "stages": 7,
    "companies": 23
   },
   "shipping": {
