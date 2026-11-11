@@ -71,7 +71,7 @@ SCM.views.industry = (function(){
   /* 段をまたぐ会社の帯：会社ごとの縦の列 */
   function band(x, cols){
     const { ST, stageIdx } = x;
-    let h = `<div class="band" style="grid-template-columns:132px repeat(${cols.length},84px);grid-template-rows:auto repeat(${ST.length},56px)">`;
+    let h = `<div class="band" style="grid-template-columns:158px repeat(${cols.length},100px);grid-template-rows:auto repeat(${ST.length},66px)">`;
     h += `<div class="rl" style="border-top:0"></div>` + cols.map(c => `<div class="ch"><a href="${links.company(c.id)}" title="${esc(c.name)}">${esc(c.short || c.name)}</a></div>`).join("");
     ST.forEach(st => {
       h += `<div class="rl"><a href="${x.L(st.id)}">${esc(st.name)}</a></div>`;

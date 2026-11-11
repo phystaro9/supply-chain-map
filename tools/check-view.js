@@ -4,7 +4,7 @@
   ------------------------------------------------------------
   使い方:  node tools/check-view.js
   ・横にはみ出すページがないか
-  ・文字が小さすぎないか（本文などは16px、図の中の文字は縮み率をかけた実際の大きさで12.5pxが下限）
+  ・文字が小さすぎないか（本文などは19px、図の中の文字は縮み率をかけた実際の大きさで12.5pxが下限）
   ・スクリプトのエラーが出ていないか
   どれかに当てはまると、内容を並べて終了コード1で止まる。
   必要なもの: playwright（node から require できること）
@@ -14,7 +14,7 @@ const { chromium } = require("playwright");
 
 const ROOT = path.resolve(__dirname, "..");
 const URL = "file://" + path.join(ROOT, "index.html");
-const MIN_FONT = 15.5, MIN_FONT_SVG = 12.5;
+const MIN_FONT = 18.5, MIN_FONT_SVG = 12.5;
 
 (async () => {
   const browser = await chromium.launch();

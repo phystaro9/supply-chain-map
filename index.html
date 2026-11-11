@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: header with search, then a vertical "line" spine of stage stations, plus a band chart where each multi-stage company gets its own column */
+html{font-size:120%}   /* 全体の文字の大きさ。rem で書いた文字はすべてこれに比例する */
 :root{
   --bg:#f3f5f7; --panel:#ffffff; --ink:#15212b; --muted:#5b6873; --line:#d5dbe1;
   --util:#0f6e5c; --util-bg:#e2f3ee; --sup:#4b43a6; --sup-bg:#ecebfb; --volt:#c98a00;
@@ -10,7 +11,7 @@
   --display:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;
   --body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-  --fs-xs:1rem; --fs-sm:1.0625rem; --fs-md:1.125rem;   /* 文字サイズは3段階。16px・17px・18px（見出しは別）。16px未満は作らない */
+  --fs-xs:1rem; --fs-sm:1.0625rem; --fs-md:1.125rem;   /* 文字サイズは3段階。html の font-size:120% と合わせて 19px・20px・22px（見出しは別）。19px未満は作らない */
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f151b; --panel:#17212a; --ink:#e4eaef; --muted:#97a4ae; --line:#2b3843;
