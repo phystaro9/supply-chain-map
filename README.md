@@ -17,6 +17,7 @@ pages/<会社ID>.js      企業ページの上乗せ分（概要・業績・資�
 js/util.js            小道具（エスケープ、金額表示、読み込み、検索用の文字そろえ）
 js/store.js           データの置き場と読み込み、リンクの組み立て
 js/views/home.js      トップ（領域ごとの業界一覧と、準備中の棚）
+js/views/network.js   つながり図（領域のかたまりと、業界どうしの線）
 js/views/industry.js  業界の全体図・段をまたぐ会社の帯・段の詳細
 js/views/company.js   企業ページ（全社に自動で用意）
 js/app.js             起動、URLの振り分け、会社検索
