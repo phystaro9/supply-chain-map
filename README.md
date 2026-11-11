@@ -48,6 +48,7 @@ prototype_electric_power.html  旧URLからの転送用
 | `#home`（または空） | 業界一覧 |
 | `#power` | 電力の全体 |
 | `#power-equipment` | 電力の「発電設備」の段 |
+| `#map` | 業界どうしのつながり図 |
 | `#co-mhi` | 三菱重工の企業ページ |
 
 古い形（`#fuel`、`#co-jera`、`#power-co-jera`）も受け付けます。

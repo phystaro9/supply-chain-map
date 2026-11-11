@@ -3,6 +3,7 @@
      #home（または空）       … 業界一覧
      #power                  … 電力の全体
      #power-equipment        … 電力の「発電設備」の段
+     #map                    … 業界どうしのつながり図
      #co-mhi                 … 三菱重工の企業ページ
    古い形（#fuel、#co-jera、#power-co-jera）も受け付ける */
 (function(){
@@ -18,6 +19,7 @@
   function parse(){
     const h = decodeURIComponent(location.hash.slice(1));
     if(!h || h === "home") return { type: "home" };
+    if(h === "map") return { type: "map" };
     if(h.startsWith("co-")) return { type: "company", id: h.slice(3) };
     const e = S.INDEX.find(x => h === x.id || h.startsWith(x.id + "-"));
     if(e){
@@ -44,6 +46,8 @@
         const st = x.stageById[r.v];
         V.industry.head(x, st ? r.v : "overview");
         st ? V.industry.sector(x, st) : V.industry.overview(x);
+      } else if(r.type === "map"){
+        V.network.render();
       } else if(r.type === "company" && S.CM[r.id]){
         const draw = await V.company.render(r.id);
         if(my !== seq) return;

@@ -38,6 +38,7 @@ SCM.views.home = (function(){
       </section>`;
     }).join("") + (S.DEPS.length ? `<section class="area">
         <div class="sec-head"><h3>業界どうしのつながり</h3><p>${S.DEPS.length}本・矢印は供給する側から受け取る側へ</p></div>
+        <a class="net-link" href="#map">図で見る →</a>
         <div class="deps">${S.DEPS.map(SCM.links.dep).join("")}</div>
       </section>` : "");
 

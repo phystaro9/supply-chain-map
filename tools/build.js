@@ -49,7 +49,7 @@ for(const e of INDEX){
   if(!/^[a-z0-9]+$/.test(e.id)) err(`industries.js: 業界ID "${e.id}" は英小文字と数字だけにしてください（URLに使うため）`);
   if(seenInd.has(e.id)) err(`industries.js: 業界ID "${e.id}" が重複しています`);
   seenInd.add(e.id);
-  if(e.id === "co" || e.id === "home") err(`industries.js: 業界ID "${e.id}" は予約語なので使えません`);
+  if(e.id === "co" || e.id === "home" || e.id === "map") err(`industries.js: 業界ID "${e.id}" は予約語なので使えません`);
   if(!e.area) err(`industries.js: 業界 "${e.id}" に area（領域ID）がありません`);
   else if(!areaIds.has(e.area)) err(`industries.js: 業界 "${e.id}" の area "${e.area}" は領域の一覧にありません`);
   for(const a of AREAS) if((a.planned || []).includes(e.name)) warn(`industries.js: 業界「${e.name}」はもう作ってあるので、領域「${a.name}」の planned から消せます`);
