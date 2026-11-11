@@ -458,11 +458,10 @@ window.SCM_COMPANIES = {
     "note": "米デジタル・リアルティと三菱商事の合弁会社。"
   },
   "rhaelm": {
-    "page": true,
     "name": "RHAELM",
     "short": "RHAELM",
     "listed": false,
-    "note": "英ロンドンのRHAELM Holdings Ltd.（未上場）。2026年10月、JERA・デルとのAI向けデータセンター計画の覚書に参加。日本では2026年9月にRhaelm Services Nippon株式会社の法人番号が指定された。公式サイトは未確認。"
+    "note": "英ロンドンのRHAELM Holdings Ltd.（未上場）。2026年10月、JERA・デルとのAI向けデータセンター計画の覚書に参加。日本法人の有無は調査中。公式サイトは未確認。"
   },
   "dell": {
     "name": "デル・テクノロジーズ",
