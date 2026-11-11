@@ -388,5 +388,150 @@ window.SCM_COMPANIES = {
     "listed": false,
     "url": "https://www.kwe.co.jp/",
     "note": "2022年に近鉄グループホールディングスの完全子会社となり上場廃止。"
+  },
+  "nttdata": {
+    "name": "NTTデータグループ",
+    "short": "NTTデータ",
+    "listed": false,
+    "url": "https://www.nttdata.com/",
+    "note": "2025年9月30日にNTTの完全子会社となり、同年9月26日に上場廃止。データセンター事業は子会社のNTT GDCが担う。",
+    "otherSectors": [
+      { "name": "通信・IT", "href": null }
+    ]
+  },
+  "kddi": {
+    "name": "KDDI",
+    "short": "KDDI",
+    "url": "https://www.kddi.com/",
+    "otherSectors": [
+      { "name": "通信キャリア", "href": null }
+    ]
+  },
+  "softbank": {
+    "name": "ソフトバンク",
+    "short": "ソフトバンク",
+    "url": "https://www.softbank.jp/corp/",
+    "otherSectors": [
+      { "name": "通信キャリア", "href": null }
+    ]
+  },
+  "sakura": {
+    "name": "さくらインターネット",
+    "short": "さくら",
+    "url": "https://www.sakura.ad.jp/"
+  },
+  "equinix": {
+    "name": "エクイニクス・ジャパン",
+    "short": "エクイニクス",
+    "url": "https://www.equinix.co.jp/",
+    "note": "米エクイニクスの日本法人。親会社は米国で上場。"
+  },
+  "mcdr": {
+    "name": "MCデジタル・リアルティ",
+    "short": "MC DR",
+    "listed": false,
+    "url": "https://www.mc-digitalrealty.com/",
+    "note": "米デジタル・リアルティと三菱商事の合弁会社。"
+  },
+  "rhaelm": {
+    "name": "RHAELM",
+    "short": "RHAELM",
+    "listed": false,
+    "note": "2026年10月、JERA・デルとのAI向けデータセンター計画の覚書に参加。公式サイトは未確認。"
+  },
+  "dell": {
+    "name": "デル・テクノロジーズ",
+    "short": "デル",
+    "url": "https://www.dell.com/ja-jp",
+    "note": "米デル・テクノロジーズの日本法人。親会社は米国で上場。"
+  },
+  "aws": {
+    "name": "アマゾン ウェブ サービス（AWS）",
+    "short": "AWS",
+    "url": "https://aws.amazon.com/jp/",
+    "note": "米アマゾンのクラウド事業。親会社は米国で上場。"
+  },
+  "microsoft": {
+    "name": "マイクロソフト",
+    "short": "MS",
+    "url": "https://www.microsoft.com/ja-jp",
+    "note": "日本法人は日本マイクロソフト。親会社は米国で上場。"
+  },
+  "google": {
+    "name": "グーグル（Google Cloud）",
+    "short": "Google",
+    "url": "https://cloud.google.com/",
+    "note": "親会社は米国で上場。"
+  },
+  "oracle": {
+    "name": "オラクル",
+    "short": "オラクル",
+    "url": "https://www.oracle.com/jp/",
+    "note": "日本法人は日本オラクル。親会社は米国で上場。"
+  },
+  "fujitsu": {
+    "name": "富士通",
+    "short": "富士通",
+    "url": "https://global.fujitsu/ja-jp"
+  },
+  "nec": {
+    "name": "NEC",
+    "short": "NEC",
+    "url": "https://jpn.nec.com/"
+  },
+  "fujielectric": {
+    "name": "富士電機",
+    "short": "富士電機",
+    "url": "https://www.fujielectric.co.jp/"
+  },
+  "daikin": {
+    "name": "ダイキン工業",
+    "short": "ダイキン",
+    "url": "https://www.daikin.co.jp/"
+  },
+  "takasago": {
+    "name": "高砂熱学工業",
+    "short": "高砂熱学",
+    "url": "https://www.tte-net.com/"
+  },
+  "daiwahouse": {
+    "name": "大和ハウス工業",
+    "short": "大和ハウス",
+    "url": "https://www.daiwahouse.co.jp/",
+    "otherSectors": [
+      { "name": "住宅・不動産", "href": null }
+    ]
+  },
+  "taisei": {
+    "name": "大成建設",
+    "short": "大成",
+    "url": "https://www.taisei.co.jp/",
+    "otherSectors": [
+      { "name": "建設（ゼネコン）", "href": null }
+    ]
+  },
+  "kajima": {
+    "name": "鹿島建設",
+    "short": "鹿島",
+    "url": "https://www.kajima.co.jp/",
+    "otherSectors": [
+      { "name": "建設（ゼネコン）", "href": null }
+    ]
+  },
+  "obayashi": {
+    "name": "大林組",
+    "short": "大林",
+    "url": "https://www.obayashi.co.jp/",
+    "otherSectors": [
+      { "name": "建設（ゼネコン）", "href": null }
+    ]
+  },
+  "shimizu": {
+    "name": "清水建設",
+    "short": "清水",
+    "url": "https://www.shimz.co.jp/",
+    "otherSectors": [
+      { "name": "建設（ゼネコン）", "href": null }
+    ]
   }
 };

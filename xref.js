@@ -15,6 +15,13 @@ window.SCM_XREF = {
    "operator": "運航（オペレーター）",
    "port": "港湾・ターミナル",
    "logistics": "物流・フォワーダー"
+  },
+  "datacenter": {
+   "power": "用地・電力",
+   "build": "建設・設備工事",
+   "equip": "設備・機器",
+   "operator": "データセンター事業者",
+   "cloud": "クラウド・AI基盤"
   }
  },
  "companies": {
@@ -35,6 +42,13 @@ window.SCM_XREF = {
     "stages": [
      "equipment"
     ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
    }
   ],
   "mhi": [
@@ -51,6 +65,13 @@ window.SCM_XREF = {
     "stages": [
      "shipbuilding"
     ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
    }
   ],
   "melco": [
@@ -59,6 +80,13 @@ window.SCM_XREF = {
     "home": "equipment",
     "stages": [
      "equipment"
+    ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
     ]
    }
   ],
@@ -79,6 +107,13 @@ window.SCM_XREF = {
     "stages": [
      "fuel",
      "generation"
+    ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "power",
+    "stages": [
+     "power"
     ]
    }
   ],
@@ -171,6 +206,13 @@ window.SCM_XREF = {
      "generation",
      "grid"
     ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "power",
+    "stages": [
+     "power"
+    ]
    }
   ],
   "rikuden": [
@@ -199,6 +241,13 @@ window.SCM_XREF = {
     "stages": [
      "grid"
     ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "power",
+    "stages": [
+     "power"
+    ]
    }
   ],
   "fujikura": [
@@ -207,6 +256,13 @@ window.SCM_XREF = {
     "home": "cables",
     "stages": [
      "cables"
+    ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
     ]
    }
   ],
@@ -236,6 +292,13 @@ window.SCM_XREF = {
     "stages": [
      "construction"
     ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
    }
   ],
   "kandenko": [
@@ -245,6 +308,13 @@ window.SCM_XREF = {
     "stages": [
      "generation",
      "construction"
+    ]
+   },
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
     ]
    }
   ],
@@ -433,6 +503,210 @@ window.SCM_XREF = {
      "logistics"
     ]
    }
+  ],
+  "daiwahouse": [
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
+   }
+  ],
+  "taisei": [
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
+   }
+  ],
+  "kajima": [
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
+   }
+  ],
+  "obayashi": [
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
+   }
+  ],
+  "shimizu": [
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
+   }
+  ],
+  "takasago": [
+   {
+    "ind": "datacenter",
+    "home": "build",
+    "stages": [
+     "build"
+    ]
+   }
+  ],
+  "fujielectric": [
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
+   }
+  ],
+  "daikin": [
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
+   }
+  ],
+  "fujitsu": [
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
+   }
+  ],
+  "nec": [
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
+   }
+  ],
+  "dell": [
+   {
+    "ind": "datacenter",
+    "home": "equip",
+    "stages": [
+     "equip"
+    ]
+   }
+  ],
+  "nttdata": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator",
+     "cloud"
+    ]
+   }
+  ],
+  "kddi": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator"
+    ]
+   }
+  ],
+  "softbank": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator"
+    ]
+   }
+  ],
+  "equinix": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator"
+    ]
+   }
+  ],
+  "mcdr": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator"
+    ]
+   }
+  ],
+  "rhaelm": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator"
+    ]
+   }
+  ],
+  "sakura": [
+   {
+    "ind": "datacenter",
+    "home": "operator",
+    "stages": [
+     "operator",
+     "cloud"
+    ]
+   }
+  ],
+  "aws": [
+   {
+    "ind": "datacenter",
+    "home": "cloud",
+    "stages": [
+     "operator",
+     "cloud"
+    ]
+   }
+  ],
+  "microsoft": [
+   {
+    "ind": "datacenter",
+    "home": "cloud",
+    "stages": [
+     "operator",
+     "cloud"
+    ]
+   }
+  ],
+  "google": [
+   {
+    "ind": "datacenter",
+    "home": "cloud",
+    "stages": [
+     "operator",
+     "cloud"
+    ]
+   }
+  ],
+  "oracle": [
+   {
+    "ind": "datacenter",
+    "home": "cloud",
+    "stages": [
+     "operator",
+     "cloud"
+    ]
+   }
   ]
  },
  "counts": {
@@ -443,6 +717,10 @@ window.SCM_XREF = {
   "shipping": {
    "stages": 5,
    "companies": 20
+  },
+  "datacenter": {
+   "stages": 5,
+   "companies": 31
   }
  }
 };

@@ -15,7 +15,7 @@ window.SCM_AREAS = [
   { "id": "materials", "name": "素材・化学",         "planned": ["鉄鋼", "化学", "非鉄金属", "紙・パルプ"] },
   { "id": "machinery", "name": "機械・重工",         "planned": ["重工・防衛", "建設機械", "工作機械・ロボット"] },
   { "id": "mobility",  "name": "自動車・モビリティ", "planned": ["自動車", "自動車部品", "二輪"] },
-  { "id": "electro",   "name": "電機・半導体",       "planned": ["半導体", "電子部品", "データセンター"] },
+  { "id": "electro",   "name": "電機・半導体",       "planned": ["半導体", "電子部品"] },
   { "id": "ict",       "name": "通信・IT",           "planned": ["通信キャリア", "クラウド・ソフトウェア"] },
   { "id": "trading",   "name": "商社",               "planned": ["総合商社", "専門商社"] },
   { "id": "living",    "name": "生活・ヘルスケア",   "planned": ["食品・飲料", "小売", "医薬", "医療機器"] },
@@ -37,5 +37,12 @@ window.SCM_INDEX = [
     "area": "logistics",
     "file": "data/shipping.js",
     "desc": "造船から荷主まで。船を持つ会社と動かす会社が分かれている業界"
+  },
+  {
+    "id": "datacenter",
+    "name": "データセンター",
+    "area": "ict",
+    "file": "data/datacenter.js",
+    "desc": "電力の確保から建設・設備・運営・クラウドまで。電力が最大の制約になっている業界"
   }
 ];
