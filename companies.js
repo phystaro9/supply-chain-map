@@ -194,6 +194,7 @@ window.SCM_COMPANIES = {
     "note": "中部電力の100%子会社（小売）。2020年4月発足。"
   },
   "tepcopg": {
+    "page": true,
     "name": "東京電力パワーグリッド",
     "short": "東電PG",
     "listed": false,
