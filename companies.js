@@ -411,6 +411,7 @@ window.SCM_COMPANIES = {
     "note": "2022年に近鉄グループホールディングスの完全子会社となり上場廃止。"
   },
   "nttdata": {
+    "page": true,
     "name": "NTTデータグループ",
     "short": "NTTデータ",
     "listed": false,
