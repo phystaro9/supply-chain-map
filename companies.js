@@ -188,6 +188,7 @@ window.SCM_COMPANIES = {
     "note": "東京電力HDの100%子会社（小売）。"
   },
   "chuden-miraiz": {
+    "page": true,
     "name": "中部電力ミライズ",
     "short": "中電ミライズ",
     "listed": false,
