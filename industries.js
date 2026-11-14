@@ -10,7 +10,7 @@
   作った業界が planned に残っていたら、そこから消す。
 */
 window.SCM_AREAS = [
-  { "id": "energy",    "name": "エネルギー",         "planned": ["都市ガス", "石油", "再生可能エネルギー"] },
+  { "id": "energy",    "name": "エネルギー",         "planned": ["都市ガス", "再生可能エネルギー"] },
   { "id": "logistics", "name": "運輸・物流",         "planned": ["空運", "鉄道", "陸運・宅配", "港湾・倉庫"] },
   { "id": "materials", "name": "素材・化学",         "planned": ["鉄鋼", "化学", "非鉄金属", "紙・パルプ"] },
   { "id": "machinery", "name": "機械・重工",         "planned": ["重工・防衛", "建設機械", "工作機械・ロボット"] },
@@ -30,6 +30,13 @@ window.SCM_INDEX = [
     "area": "energy",
     "file": "data/power.js",
     "desc": "燃料から需要家まで。大手電力、JERA、重電、電線、電気工事"
+  },
+  {
+    "id": "oil",
+    "name": "石油",
+    "area": "energy",
+    "file": "data/oil.js",
+    "desc": "原油の調達から給油所まで。タンカー・備蓄、製油所と元売り、石油化学"
   },
   {
     "id": "shipping",
