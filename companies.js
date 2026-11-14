@@ -72,6 +72,7 @@ window.SCM_COMPANIES = {
     ]
   },
   "toshiba": {
+    "page": true,
     "name": "東芝",
     "short": "東芝",
     "listed": false,
@@ -179,6 +180,7 @@ window.SCM_COMPANIES = {
     "cap": 658
   },
   "tepco-ep": {
+    "page": true,
     "name": "東京電力エナジーパートナー",
     "short": "東電EP",
     "listed": false,
@@ -186,6 +188,7 @@ window.SCM_COMPANIES = {
     "note": "東京電力HDの100%子会社（小売）。"
   },
   "chuden-miraiz": {
+    "page": true,
     "name": "中部電力ミライズ",
     "short": "中電ミライズ",
     "listed": false,
@@ -193,6 +196,7 @@ window.SCM_COMPANIES = {
     "note": "中部電力の100%子会社（小売）。2020年4月発足。"
   },
   "tepcopg": {
+    "page": true,
     "name": "東京電力パワーグリッド",
     "short": "東電PG",
     "listed": false,
@@ -272,6 +276,7 @@ window.SCM_COMPANIES = {
     ]
   },
   "tsuneishi": {
+    "page": true,
     "name": "常石造船",
     "short": "常石造船",
     "listed": false,
@@ -399,6 +404,7 @@ window.SCM_COMPANIES = {
     "url": "https://www.nipponexpress-holdings.com/"
   },
   "kwe": {
+    "page": true,
     "name": "近鉄エクスプレス",
     "short": "近鉄エクス",
     "listed": false,
@@ -406,6 +412,7 @@ window.SCM_COMPANIES = {
     "note": "2022年に近鉄グループホールディングスの完全子会社となり上場廃止。"
   },
   "nttdata": {
+    "page": true,
     "name": "NTTデータグループ",
     "short": "NTTデータ",
     "listed": false,
@@ -443,6 +450,7 @@ window.SCM_COMPANIES = {
     "note": "米エクイニクスの日本法人。親会社は米国で上場。"
   },
   "mcdr": {
+    "page": true,
     "name": "MCデジタル・リアルティ",
     "short": "MC DR",
     "listed": false,
@@ -453,7 +461,7 @@ window.SCM_COMPANIES = {
     "name": "RHAELM",
     "short": "RHAELM",
     "listed": false,
-    "note": "2026年10月、JERA・デルとのAI向けデータセンター計画の覚書に参加。公式サイトは未確認。"
+    "note": "英ロンドンのRHAELM Holdings Ltd.（未上場）。2026年10月、JERA・デルとのAI向けデータセンター計画の覚書に参加。日本法人の有無は調査中。公式サイトは未確認。"
   },
   "dell": {
     "name": "デル・テクノロジーズ",
