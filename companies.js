@@ -557,5 +557,102 @@ window.SCM_COMPANIES = {
     "otherSectors": [
       { "name": "建設（ゼネコン）", "href": null }
     ]
+  },
+  "jogmec": {
+    "name": "エネルギー・金属鉱物資源機構（JOGMEC）",
+    "short": "JOGMEC",
+    "listed": false,
+    "url": "https://www.jogmec.go.jp/",
+    "note": "政府系の法人（上場なし）。"
+  },
+  "eneos": {
+    "name": "ENEOSホールディングス",
+    "short": "ENEOS",
+    "url": "https://www.hd.eneos.co.jp/",
+    "note": "東証プライム・名証プレミア上場（2010年4月上場）。元売りの事業は100%子会社のENEOS株式会社（未上場）が担う。"
+  },
+  "idemitsu": {
+    "name": "出光興産",
+    "short": "出光",
+    "url": "https://www.idemitsu.com/jp/",
+    "note": "2025年にTOBで富士石油を取得（富士石油は2026年1月20日に上場廃止。出光の持株比率は未確認）。"
+  },
+  "cosmo": {
+    "name": "コスモエネルギーホールディングス",
+    "short": "コスモ",
+    "url": "https://www.cosmo-energy.co.jp/",
+    "note": "持株会社。グループにコスモ石油（精製）・コスモ石油マーケティング（販売）・コスモエネルギー開発。各社への出資比率は未確認。"
+  },
+  "cosmo-marketing": {
+    "name": "コスモ石油マーケティング",
+    "short": "コスモ石油MKT",
+    "listed": false,
+    "note": "コスモエネルギーホールディングスのグループ会社（出資比率は未確認）。公式サイトは未確認。"
+  },
+  "taiyo-oil": {
+    "name": "太陽石油",
+    "short": "太陽石油",
+    "listed": false,
+    "note": "未上場（株主は未確認）。2014年に太陽石油化学を吸収合併。公式サイトは開けなかった（公式のPDF資料で確認）。"
+  },
+  "fuji-oil": {
+    "name": "富士石油",
+    "short": "富士石油",
+    "listed": false,
+    "url": "https://www.foc.co.jp/",
+    "note": "2026年1月20日に上場廃止。出光興産のTOB（2025年9〜10月、1株480円、成立）と、2025年12月の株主総会で承認された株式併合による。"
+  },
+  "toa-oil": {
+    "name": "東亜石油",
+    "short": "東亜石油",
+    "listed": false,
+    "note": "2020年12月、出光興産が上場廃止を前提にしたTOBを発表し、東証が監理銘柄に指定した。その後の上場廃止日と出光の持株比率は未確認。公式サイトは未確認。"
+  },
+  "kashima-oil": {
+    "name": "鹿島石油",
+    "short": "鹿島石油",
+    "listed": false,
+    "note": "石油連盟の会員。資本関係は未確認。公式サイトは未確認。"
+  },
+  "showa-yokkaichi": {
+    "name": "昭和四日市石油",
+    "short": "昭和四日市",
+    "listed": false,
+    "note": "出光興産の製油所一覧に掲載。資本関係は未確認。公式サイトは未確認。"
+  },
+  "seibu-oil": {
+    "name": "西部石油",
+    "short": "西部石油",
+    "listed": false,
+    "note": "出光興産の製油所一覧に掲載。資本関係は未確認。公式サイトは未確認。"
+  },
+  "kygnus": {
+    "name": "キグナス石油",
+    "short": "キグナス",
+    "listed": false,
+    "note": "石油連盟の会員。資本関係は未確認。公式サイトは未確認。"
+  },
+  "mitsui-chem": {
+    "name": "三井化学",
+    "short": "三井化学",
+    "note": "公式サイトは未確認。"
+  },
+  "maruzen-pc": {
+    "name": "丸善石油化学",
+    "short": "丸善石化",
+    "listed": false,
+    "note": "京葉エチレンに55%出資（住友化学が45%）。自社の親会社は未確認。公式サイトは未確認。"
+  },
+  "keiyo-ethylene": {
+    "name": "京葉エチレン",
+    "short": "京葉エチレン",
+    "listed": false,
+    "note": "丸善石油化学55%・住友化学45%の合弁。公式サイトは未確認。"
+  },
+  "amec": {
+    "name": "AMEC（旭化成・三菱ケミカルの合弁）",
+    "short": "AMEC",
+    "listed": false,
+    "note": "旭化成50%・三菱ケミカル50%。正式な社名と公式サイトは未確認。旭化成・三菱ケミカル・三井化学は2025年8月に西日本の設備統合のための有限責任事業組合（LLP）を設立したと報じられた。"
   }
 };

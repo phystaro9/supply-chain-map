@@ -10,6 +10,13 @@ window.SCM_XREF = {
    "grid": "送配電網",
    "retail": "小売"
   },
+  "oil": {
+   "upstream": "資源開発・調達",
+   "transport": "輸送・備蓄",
+   "refining": "精製・元売り",
+   "petrochem": "石油化学",
+   "distribution": "流通・販売"
+  },
   "shipping": {
    "shipbuilding": "造船・舶用機器",
    "owner": "船主",
@@ -33,6 +40,15 @@ window.SCM_XREF = {
     "stages": [
      "fuel",
      "generation"
+    ]
+   },
+   {
+    "ind": "oil",
+    "home": "upstream",
+    "stages": [
+     "upstream",
+     "transport",
+     "distribution"
     ]
    }
   ],
@@ -346,6 +362,191 @@ window.SCM_XREF = {
     ]
    }
   ],
+  "jogmec": [
+   {
+    "ind": "oil",
+    "home": "transport",
+    "stages": [
+     "transport"
+    ]
+   }
+  ],
+  "nyk": [
+   {
+    "ind": "oil",
+    "home": "transport",
+    "stages": [
+     "transport"
+    ]
+   },
+   {
+    "ind": "shipping",
+    "home": "operator",
+    "stages": [
+     "owner",
+     "operator",
+     "port",
+     "logistics"
+    ]
+   }
+  ],
+  "mol": [
+   {
+    "ind": "oil",
+    "home": "transport",
+    "stages": [
+     "transport"
+    ]
+   },
+   {
+    "ind": "shipping",
+    "home": "operator",
+    "stages": [
+     "owner",
+     "operator",
+     "port",
+     "logistics"
+    ]
+   }
+  ],
+  "kashima-oil": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "transport",
+     "refining"
+    ]
+   }
+  ],
+  "eneos": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "idemitsu": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining",
+     "petrochem"
+    ]
+   }
+  ],
+  "cosmo": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining",
+     "distribution"
+    ]
+   }
+  ],
+  "taiyo-oil": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "fuji-oil": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "toa-oil": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "showa-yokkaichi": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "seibu-oil": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "kygnus": [
+   {
+    "ind": "oil",
+    "home": "refining",
+    "stages": [
+     "refining"
+    ]
+   }
+  ],
+  "mitsui-chem": [
+   {
+    "ind": "oil",
+    "home": "petrochem",
+    "stages": [
+     "petrochem"
+    ]
+   }
+  ],
+  "maruzen-pc": [
+   {
+    "ind": "oil",
+    "home": "petrochem",
+    "stages": [
+     "petrochem"
+    ]
+   }
+  ],
+  "keiyo-ethylene": [
+   {
+    "ind": "oil",
+    "home": "petrochem",
+    "stages": [
+     "petrochem"
+    ]
+   }
+  ],
+  "amec": [
+   {
+    "ind": "oil",
+    "home": "petrochem",
+    "stages": [
+     "petrochem"
+    ]
+   }
+  ],
+  "cosmo-marketing": [
+   {
+    "ind": "oil",
+    "home": "distribution",
+    "stages": [
+     "distribution"
+    ]
+   }
+  ],
   "imabari": [
    {
     "ind": "shipping",
@@ -416,30 +617,6 @@ window.SCM_XREF = {
     "home": "owner",
     "stages": [
      "owner"
-    ]
-   }
-  ],
-  "nyk": [
-   {
-    "ind": "shipping",
-    "home": "operator",
-    "stages": [
-     "owner",
-     "operator",
-     "port",
-     "logistics"
-    ]
-   }
-  ],
-  "mol": [
-   {
-    "ind": "shipping",
-    "home": "operator",
-    "stages": [
-     "owner",
-     "operator",
-     "port",
-     "logistics"
     ]
    }
   ],
@@ -741,6 +918,10 @@ window.SCM_XREF = {
   "power": {
    "stages": 7,
    "companies": 25
+  },
+  "oil": {
+   "stages": 5,
+   "companies": 19
   },
   "shipping": {
    "stages": 5,

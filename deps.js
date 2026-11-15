@@ -10,6 +10,11 @@
 window.SCM_DEPS = [
   {
     "from": { "ind": "shipping", "stage": "operator" },
+    "to":   { "ind": "oil",      "stage": "transport" },
+    "what": "原油タンカー（VLCC）が、中東などの原油を日本へ運ぶ。元売りは約50隻のVLCCを保有・用船し、うち約40隻は定期用船と報じられた（2026年6月、業界推計）"
+  },
+  {
+    "from": { "ind": "shipping", "stage": "operator" },
     "to":   { "ind": "power",    "stage": "fuel" },
     "what": "LNG船・石炭船・タンカーが、発電所で使う燃料を海外から運ぶ。日本はLNGと石炭の大半を輸入に頼っている"
   },
