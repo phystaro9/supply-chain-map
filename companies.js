@@ -606,13 +606,15 @@ window.SCM_COMPANIES = {
     "name": "東亜石油",
     "short": "東亜石油",
     "listed": false,
-    "note": "2020年12月、出光興産が上場廃止を前提にしたTOBを発表し、東証が監理銘柄に指定した。その後の上場廃止日と出光の持株比率は未確認。公式サイトは未確認。"
+    "url": "https://www.toaoil.co.jp/",
+    "note": "2020年12月、出光興産が上場廃止を前提にしたTOBを発表し、東証が監理銘柄に指定した。その後の上場廃止日と出光の持株比率は未確認。公式サイトに出光興産グループに属するとの記載がある。"
   },
   "kashima-oil": {
     "name": "鹿島石油",
     "short": "鹿島石油",
     "listed": false,
-    "note": "石油連盟の会員。資本関係は未確認。公式サイトは未確認。"
+    "url": "https://www.kashima-oil.co.jp/",
+    "note": "石油連盟の会員。公式サイトに親会社はENEOSとの記載がある（出資比率は未確認）。"
   },
   "showa-yokkaichi": {
     "name": "昭和四日市石油",
@@ -635,13 +637,14 @@ window.SCM_COMPANIES = {
   "mitsui-chem": {
     "name": "三井化学",
     "short": "三井化学",
-    "note": "公式サイトは未確認。"
+    "url": "https://jp.mitsuichemicals.com/"
   },
   "maruzen-pc": {
     "name": "丸善石油化学",
     "short": "丸善石化",
     "listed": false,
-    "note": "京葉エチレンに55%出資（住友化学が45%）。自社の親会社は未確認。公式サイトは未確認。"
+    "url": "https://www.chemiway.co.jp/",
+    "note": "京葉エチレンに55%出資（住友化学が45%）。2025年4月1日の発表で、コスモエネルギーホールディングスのグループ会社とされている（出資比率は未確認）。"
   },
   "keiyo-ethylene": {
     "name": "京葉エチレン",
