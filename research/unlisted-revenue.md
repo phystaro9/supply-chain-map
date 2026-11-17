@@ -24,3 +24,20 @@
 - 鹿島石油・京葉エチレン・コスモ石油マーケティング・東亜石油・AMEC：売上高は見つからない。
 - 注意：「京葉ポリエチレン」（売上高1,574億円と出る）は別の会社。京葉エチレンと取り違えない。
 - コスモ石油マーケティングは、コスモエネルギーHDのグループ会社で資本金10億円・発足2015年2月6日（コスモ公式の会社概要）。売上高は未確認。
+
+## 2026-11-18 検索だけの再調査（WebFetchなし・追加0社）
+
+WebFetch を使わず WebSearch だけで、残り11社（東亜石油・鹿島石油・昭和四日市石油・西部石油・キグナス石油・京葉エチレン・AMEC・コスモ石油マーケティング・JMU・ONE・MCデジタル・リアルティ）を再検索した。検索結果はタイトルとURLだけで、数字を含む断片は返らなかった。ページを開かないと数字を確認できないため、**rev は1社も足していない**。
+
+次に開いて確かめる候補（URLは検索結果に出たもの。中身は未確認）：
+
+- 東亜石油：EDINETの有価証券報告書 https://disclosure2dl.edinet-fsa.go.jp/searchdocument/pdf/S10078TV.pdf 、決算短信 https://www2.jpx.co.jp/disc/50080/140120200730469991.pdf （上場廃止前の最後の期の連結売上高が載る可能性。どの期かは未確認）
+- 昭和四日市石油：Compalyze https://compalyze.co.jp/company/5010401044391 （決算公告。売上高が載るかは未確認）
+- 西部石油：マイナビ会社概要 https://job.mynavi.jp/27/pc/search/corp84670/outline.html （就職サイト。載れば「参考」止まり）
+- キグナス石油：gurafu.net https://gurafu.net/jpn/kygnus-sekiyu （集計サイト。売上高の有無は未確認）
+- 京葉エチレン：catr.jp https://catr.jp/companies/de0da/55083 （同名の別会社でないか、法人番号で要確認）
+- JMU：catr.jp https://catr.jp/companies/590a5/8214 、日刊工業新聞 https://www.nikkan.co.jp/articles/view/00471519 （どの会社の記事か未確認）
+- AMEC：旭化成のリリース https://www.asahi-kasei.com/jp/news/2025/ze260127.html （2026年1月27日付。LLPの件で、売上高は載らない可能性が高い）
+- ONE：参考として、英文報道（portcalls）の見出しに「2025年の売上 166億米ドル、純利益3.38億米ドル」とある https://portcalls.com/one-records-16-6b-revenue-in-2025-net-profit-drops-to-338m/ 。ドル建てで、決算期・為替の扱いが未確認のため、円換算した rev は入れない（円建ての出典があれば足せる）
+
+コスモ石油マーケティング・鹿島石油・MCデジタル・リアルティは、売上高の出典候補が検索結果に出なかった。
