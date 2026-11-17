@@ -192,6 +192,7 @@ window.SCM_COMPANIES = {
     "name": "中部電力ミライズ",
     "short": "中電ミライズ",
     "listed": false,
+    "rev": 28738,
     "url": "https://miraiz.chuden.co.jp/",
     "note": "中部電力の100%子会社（小売）。2020年4月発足。"
   },
@@ -257,6 +258,7 @@ window.SCM_COMPANIES = {
     "name": "今治造船",
     "short": "今治造船",
     "listed": false,
+    "rev": 4646,
     "url": "https://www.imazo.co.jp/",
     "note": "創業家の檜垣家が経営する非上場企業。2026年1月にJMUを子会社化。",
     "page": true
@@ -280,6 +282,7 @@ window.SCM_COMPANIES = {
     "name": "常石造船",
     "short": "常石造船",
     "listed": false,
+    "rev": 3480,
     "url": "https://www.tsuneishi.co.jp/"
   },
   "khi": {
@@ -416,6 +419,7 @@ window.SCM_COMPANIES = {
     "name": "NTTデータグループ",
     "short": "NTTデータ",
     "listed": false,
+    "rev": 46387,
     "url": "https://www.nttdata.com/",
     "note": "2025年9月30日にNTTの完全子会社となり、同年9月26日に上場廃止。データセンター事業は子会社のNTT GDCが担う。",
     "otherSectors": [
@@ -593,12 +597,14 @@ window.SCM_COMPANIES = {
     "name": "太陽石油",
     "short": "太陽石油",
     "listed": false,
+    "rev": 7485,
     "note": "未上場（株主は未確認）。2014年に太陽石油化学を吸収合併。公式サイトは開けなかった（公式のPDF資料で確認）。"
   },
   "fuji-oil": {
     "name": "富士石油",
     "short": "富士石油",
     "listed": false,
+    "rev": 8402,
     "url": "https://www.foc.co.jp/",
     "note": "2026年1月20日に上場廃止。出光興産のTOB（2025年9〜10月、1株480円、成立）と、2025年12月の株主総会で承認された株式併合による。"
   },
@@ -643,6 +649,7 @@ window.SCM_COMPANIES = {
     "name": "丸善石油化学",
     "short": "丸善石化",
     "listed": false,
+    "rev": 3308,
     "url": "https://www.chemiway.co.jp/",
     "note": "京葉エチレンに55%出資（住友化学が45%）。2025年4月1日の発表で、コスモエネルギーホールディングスのグループ会社とされている（出資比率は未確認）。"
   },
